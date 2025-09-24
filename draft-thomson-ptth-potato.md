@@ -8,19 +8,19 @@ number:
 date:
 consensus: true
 v: 3
-area: AREA
-workgroup: WG Working Group
+area: "Web and Internet Transport"
+workgroup: "Protocol for Transposed Transactions over HTTP"
 keyword:
  - next generation
  - unicorn
  - sparkling distributed ledger
 venue:
-  group: WG
-  type: Working Group
-  mail: WG@example.com
-  arch: https://example.com/WG
-  github: USER/REPO
-  latest: https://example.com/LATEST
+  group: "Protocol for Transposed Transactions over HTTP"
+  type: "Working Group"
+  mail: "ptth@ietf.org"
+  arch: "https://mailarchive.ietf.org/arch/browse/ptth/"
+  github: "martinthomson/potato"
+  latest: "https://martinthomson.github.io/potato/draft-thomson-ptth-potato.html"
 
 author:
  -
