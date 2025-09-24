@@ -19,9 +19,8 @@
 # Change the file extension to match the format (.xml for XML, etc...)
 #
 ###
-title: "TODO - Your title"
-abbrev: "TODO - Abbreviation"
-category: info
+title: "Potato - Reverse HTTP"
+category: std
 
 docname: draft-todo-yourname-protocol-latest
 submissiontype: IETF  # also: "independent", "editorial", "IAB", or "IRTF"
@@ -46,7 +45,7 @@ venue:
 author:
  -
     fullname: Your Name Here
-    organization: Your Organization Here
+    organization: Mozilla
     email: your.email@example.com
 
 normative:
@@ -57,8 +56,7 @@ informative:
 
 --- abstract
 
-TODO Abstract
-
+This document defines inverted versions of HTTP for origin servers.
 
 --- middle
 
