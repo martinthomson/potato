@@ -3,17 +3,17 @@
 
 
 WG Working Group                                              Y. N. Here
-Internet-Draft                                    Your Organization Here
-Intended status: Informational                         24 September 2025
+Internet-Draft                                                   Mozilla
+Intended status: Standards Track                       24 September 2025
 Expires: 28 March 2026
 
 
-                           TODO - Your title
+                         Potato - Reverse HTTP
                   draft-todo-yourname-protocol-latest
 
 Abstract
 
-   TODO Abstract
+   This document defines inverted versions of HTTP for origin servers.
 
 About This Document
 
@@ -110,5 +110,5 @@ Acknowledgments
 Author's Address
 
    Your Name Here
-   Your Organization Here
+   Mozilla
    Email: your.email@example.com
