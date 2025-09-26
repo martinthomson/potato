@@ -2,34 +2,37 @@
 
 
 
-WG Working Group                                              Y. N. Here
+Protocol for Transposed Transactions over HTTP                M. Thomson
 Internet-Draft                                                   Mozilla
-Intended status: Standards Track                       24 September 2025
-Expires: 28 March 2026
+Intended status: Standards Track                       26 September 2025
+Expires: 30 March 2026
 
 
                          Potato - Reverse HTTP
-                  draft-todo-yourname-protocol-latest
+                    draft-thomson-ptth-potato-latest
 
 Abstract
 
-   This document defines inverted versions of HTTP for origin servers.
+   This document defines 🥔, a suite of reversed versions of HTTP for
+   origin servers.
 
 About This Document
 
    This note is to be removed before publishing as an RFC.
 
    The latest revision of this draft can be found at
-   https://example.com/LATEST.  Status information for this document may
-   be found at https://datatracker.ietf.org/doc/draft-todo-yourname-
-   protocol/.
+   https://martinthomson.github.io/potato/draft-thomson-ptth-
+   potato.html.  Status information for this document may be found at
+   https://datatracker.ietf.org/doc/draft-thomson-ptth-potato/.
 
-   Discussion of this document takes place on the WG Working Group
-   mailing list (mailto:WG@example.com), which is archived at
-   https://example.com/WG.
+   Discussion of this document takes place on the Protocol for
+   Transposed Transactions over HTTP Working Group mailing list
+   (mailto:ptth@ietf.org), which is archived at
+   https://mailarchive.ietf.org/arch/browse/ptth/.  Subscribe at
+   https://www.ietf.org/mailman/listinfo/ptth/.
 
    Source for this draft and an issue tracker can be found at
-   https://github.com/USER/REPO.
+   https://github.com/martinthomson/potato.
 
 Status of This Memo
 
@@ -46,7 +49,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 28 March 2026.
+   This Internet-Draft will expire on 30 March 2026.
 
 Copyright Notice
 
@@ -66,15 +69,65 @@ Table of Contents
 
    1.  Introduction
    2.  Conventions and Definitions
-   3.  Security Considerations
-   4.  IANA Considerations
-   5.  Normative References
+   3.  Overview and Scope
+   4.  Reversed HTTP
+     4.1.  Reversed HTTP/1.1
+     4.2.  Reversed HTTP/2
+     4.3.  Reversed HTTP/3
+   5.  Authenticating and Authorizing Origin Servers
+     5.1.  TLS Client Certificates
+     5.2.  HTTP Request
+     5.3.  Authorization for Limited Path Scope
+   6.  Authenticating Gateways
+   7.  TLS Early Data
+   8.  Scalability, Availability, and Connection Management
+   9.  Security Considerations
+   10. IANA Considerations
+   11. References
+     11.1.  Normative References
+     11.2.  Informative References
    Acknowledgments
    Author's Address
 
 1.  Introduction
 
-   TODO Introduction
+   Operating an HTTP server that is accessable on the public internet
+   creates an unmanageable risk of denial of service for many
+   organizations, especially smaller operators.  Content delivery
+   networks (CDNs) are able to provide a measure of protection, but
+   their services typically operate as gateways, which require that the
+   origin server be reachable.
+
+   An alternative deployment model has emerged as a means of addressing
+   this concern, where, rather than have the gateway initiate a
+   connection to the origin, the origin connects to the gateway.
+
+   +--------+     +---------+      +----------+    +--------+
+   | Client |     | Gateway |      | Firewall |    | Origin |
+   +---+----+     +----+----+      +----+-----+    +---+----+
+       |               |                |              |
+       |               |<================ connect 🥔 ===+
+       |               |                |              |
+    ~~~~~~~~~~~~~~~~~~~~ some time later ~~~~~~~~~~~~~~~~~~~
+       |               |                |              |
+       +-- request --->|                |              |  | messages
+       |               +-- request ------------------->|  | exchanged
+       |               |                |              |  | over
+       |               |<------------------ response --+  | existing
+       |<-- response --+                |              |  | connection
+       |               |                |              |
+
+   This arrangement greatly simplifies the configuration of firewalls,
+   which are better able to authorize outward-bound connections.
+
+   This document defines alternative, "reversed", versions of HTTP
+   [HTTP] protocols.  These protocols are all nearly identical to their
+   "forward" counterparts, with the exception that the client and server
+   roles are inverted after completing the transport and TLS layer
+   establishment.
+
+   This document defines reversed equivalents to HTTP/1.1 [HTTP/1.1],
+   HTTP/2 [HTTP/2], and [HTTP/3].
 
 2.  Conventions and Definitions
 
@@ -84,15 +137,369 @@ Table of Contents
    BCP 14 [RFC2119] [RFC8174] when, and only when, they appear in all
    capitals, as shown here.
 
-3.  Security Considerations
+   This document uses terminology from [HTTP].
 
-   TODO Security
+   Because having roles reversed can be especially confusing, this
+   document tries to be consistent in its use of language.
 
-4.  IANA Considerations
+   The terms _client_ and _server_, when unqualified, refer to the HTTP
+   client and HTTP server roles respectively.
 
-   This document has no IANA actions.
+   In this document, a _gateway_ will generally be the HTTP client and
+   an _origin server_ will generally be the HTTP server.  These terms
+   will be used where it makes sense.
 
-5.  Normative References
+   Where it is necessary to identify a client or server role outside of
+   the context of reversed HTTP, the term will be qualified.  This
+   typically will use the protocol where the role is used.  For example,
+   "TLS client role" or "acting as QUIC client".
+
+3.  Overview and Scope
+
+   This document describes how to establish reversed HTTP connections.
+
+   The overall approach is to allocate new Application-Layer Protocol
+   Negotiation (ALPN) [ALPN] identifiers to each reversed HTTP version.
+
+   The origin server acts in the client role for establishing the
+   transport and security layers of a connection to the gateway, which
+   provides a server for those layers.  That is, for HTTP/1.1 and
+   HTTP/2, the origin server is the TCP and TLS client and the gateway
+   is the TCP and TLS server.  For HTTP/3, the origin server is the QUIC
+   client and the gateway is the QUIC server.
+
+   If the gateway selects the reversed HTTP version in the protocol
+   negotiation, the corresponding HTTP version is conducted with the
+   usual roles reversed.  The gateway becomes the HTTP client and the
+   origin server becomes the HTTP server.  No other changes are made to
+   the protocol.
+
+   The document explores some of the implications of this design,
+   including authorization (Section 6 and Section 5), and interactions
+   with some protocol features.  However, there are numerous factors
+   that are relevant when choosing an appropriate server deployment
+   architecture.  This document will address only those that are
+   relevant to the design of the protocol and essential to its secure
+   and correct operation.
+
+   This document does not define a protocol that allows both endpoints
+   to make requests over the same connection.  Separate connections can
+   be used if requests need to be exchanged in both directions.
+
+4.  Reversed HTTP
+
+   This section defines the basic operation of reversed HTTP for each
+   major HTTP version.
+
+   All versions of reversed HTTP require special handling for questions
+   of server authority.  Authorizing the origin server is discussed in
+   Section 5.  Similarly the means by which a gateway authorizes an
+   origin server are discussed in Section 5.
+
+   Most HTTP features, including extensions to specific HTTP versions,
+   are unaffected by the reversal of the protocol.
+
+   Only those features that depend on lower protocols layers that also
+   depend on assumptions about how the the TLS or transport-layer role
+   relates to the HTTP client or server role.  Such features cannot be
+   used without additional profiling.
+
+   The features that cannot be used with reversed HTTP include: the
+   Client-Cert HTTP field [RFC9440].
+
+   A small adjustment to the operation of the HTTP/3 Datagram extension
+   [HTTP-DGRAM] is described in Section 4.3.
+
+4.1.  Reversed HTTP/1.1
+
+   A reversed version of HTTP/1.1 [HTTP/1.1] is identified by the ALPN
+   label "rh1".
+
+   To negotiate the use of reversed HTTP/1.1 protocol, an origin server
+   advertises the "rh1" token in its TLS handshake using ALPN [ALPN] and
+   a gateway selects that token.
+
+   Once a TLS connection is established, the origin server (as a TLS
+   client) becomes the HTTP server and the gateway (as TLS server)
+   becomes the HTTP client.  Messages sent by the gateway are HTTP
+   requests and messages from the origin server are HTTP responses.
+
+   HTTP/1.1 depends only on an undifferentiated stream of bytes.  No
+   special considerations apply to this version.
+
+4.2.  Reversed HTTP/2
+
+   A reversed version of HTTP/2 [HTTP/2] is identified by the ALPN label
+   "rh2".
+
+   To negotiate the use of reversed HTTP/2 protocol, an origin server
+   advertises the "rh2" token in its TLS handshake using ALPN [ALPN] and
+   a gateway selects that token.
+
+   Once a TLS connection is established, the origin server (as a TLS
+   client) becomes the HTTP/2 server and the gateway (as TLS server)
+   becomes the HTTP/2 client.  Each send a preface (Section 3.4 of
+   [HTTP/2]) and establishes an HTTP connection.
+
+   HTTP/2 depends only on an undifferentiated stream of bytes.  No
+   changes are necessary to the base protocol.
+
+   In operation, the gateway (as HTTP/2 client) initiates requests on
+   odd-numbered streams.  Any push promises from the origin server (as
+   HTTP server) are sent on even-numbered streams.
+
+4.3.  Reversed HTTP/3
+
+   A reversed version of HTTP/3 [HTTP/3] is identified by the ALPN label
+   "rh3".
+
+   To negotiate the use of reversed HTTP/3 protocol, an origin server
+   advertises the "rh3" token in its QUIC handshake using ALPN [ALPN]
+   and a gateway selects that token.
+
+   Once a QUIC connection is established, the origin server (as a QUIC
+   client) becomes the HTTP/3 server and the gateway (as QUIC server)
+   becomes the HTTP/3 client.  Each send a preface (Section 3.4 of
+   [HTTP/2]) and establishes an HTTP connection.
+
+   Unlike HTTP/2, the streaming layer that HTTP/3 uses is provided by
+   QUIC.  Therefore, the identifiers given to streams change.  This
+   should not be visible to the HTTP/3 layer; the HTTP/3 design
+   generally does not depend on stream identifiers being in any
+   particular form.
+
+   One exception to this is the Quarter Stream ID concept introduced in
+   Section 2.1 of [HTTP-DGRAM].  Because requests in reversed HTTP/3 are
+   made on bi-directional, server-initiated streams, those identifiers
+   end with two bits (0b01); see Section 2.1 of [QUIC].  To construct a
+   Quarter Stream ID from a stream identifier, any remainder is
+   discarded.  To construct a stream identifier from a Quarter Stream ID
+   in reversed HTTP/3, the value is multiplied by 4, then the stream
+   type (0b01) is added.  This adjustment only requires an understanding
+   of the type of QUIC stream that the HTTP client uses to make
+   requests.
+
+   Any extension that makes similar assumptions about the structure of
+   stream identifiers can be adjusted in a similar manner.
+
+5.  Authenticating and Authorizing Origin Servers
+
+   Arrangements between gateways and origin servers are often privately
+   arranged.  Therefore, how a gateway chooses to authorize an origin
+   server does not necessarily benefit from having a single, standard
+   mechanism.
+
+   This section describes a few options for origin server
+   authentication.  None of these approaches is mandated, as it is
+   expected that private arrangements will be used in most deployments.
+
+5.1.  TLS Client Certificates
+
+   TLS client certificates can be used to authenticate TLS clients.
+   That authentication could be used as the basis of authorization.
+
+   The choice of how to authenticate a client certificate is complex.
+   Multiple options are possible, each with different operational and
+   deployment properties:
+
+   *  The gateway could use the same public key infrastructure (PKI) as
+      the certificate that the gateway itself offers (see Section 6).
+
+   *  A completely separate PKI could be used.  This includes a PKI
+      managed by the gateway.
+
+   *  Self-signed certificates could be mapped to specific
+      authorizations.
+
+   This option might introduce some challenges in deployment.  Because
+   the TLS connection that is established to the gateway uses the same
+   endpoint that other clients, the TLS server software needs to make
+   its protocol selection before deciding to request a client
+   certificate.
+
+5.2.  HTTP Request
+
+   Once a reversed HTTP connection is established, the gateway could
+   make a request to a pre-arranged resource.
+
+   This request could be used to retrieve a bearer token that authorizes
+   the origin server.  A more complex request might involve the origin
+   server producing a signed object that covers a challenge produced by
+   the gateway.  Responding to a challenge is a defense against the
+   possibility of an attack that captures and replays a bearer token.
+
+   TODO: Should this document define a protocol?
+
+5.3.  Authorization for Limited Path Scope
+
+   A gateway does not need to authorize an origin server to serve all
+   requests for an origin.  Nor does a gateway need to limit its
+   authorization to a single origin.
+
+   The choice of which requests are forwarded to an origin server is a
+   matter for gateway policy.  That policy might be guided by the choice
+   of credential presented by the origin server.
+
+   For instance, if a HTTP request is used to authorize the origin
+   server, the response might include information that guides the
+   gateway in determining which requests are forwarded over the
+   connection.  This could be as simple as having the origin server list
+   path prefixes that it can serve or it could be bound to the
+   credentials that are offered.
+
+   This might be used to enable different deployment architectures where
+   the one logical origin server is distributed across multiple
+   instances, with different paths being served by different hosts.
+
+   This approach is also compatible with a gateway that makes regular
+   HTTP connections to some origin server nodes.  A gateway might
+   forward requests for the one origin to origin servers that use both
+   regular and reversed HTTP based on whatever policy it chooses.
+
+6.  Authenticating Gateways
+
+   An origin server MUST authenticate a gateway unless an alternative
+   means of authentication is privately arranged.
+
+   In all reversed HTTP versions, when the the origin server establishes
+   a TLS connection to the gateway, it confirms the identity of the
+   gateway according to the rules of the respective, non-reversed, HTTP
+   version.
+
+   The rules in Section 4.3 of [HTTP] regarding how clients determine
+   whether a server can answer a request are applied in reverse.  That
+   is, an origin server that cannot successfully determine that a
+   gateway is authoritative for resources MUST NOT answer requests from
+   that gateway.
+
+   Because the server and client roles are reversed, some methods for
+   expanding the scope that a server can claim authority are
+   invalidated.  Mechanisms like the ORIGIN frame [ORIGIN] remain valid
+   as a means of limiting scope.
+
+   These requirements do not exist to provide protection against
+   impersonation, which is generally the reason to require that a server
+   establish authority.  They exist to protect things like the
+   confidentiality of responses.
+
+7.  TLS Early Data
+
+   A gateway can use TLS session resumption to make establishing
+   connections more efficient.  This includes the possibility of
+   enabling TLS early data.
+
+   Unlike in regular HTTP where a client can use TLS early data to make
+   a request, reversed HTTP gives the server an opportunity to speak
+   first.  This has little value, as an HTTP server generally has to
+   wait for requests.
+
+   This provides similar properties to the first flight of server
+   application data in a TLS 1.3 connection without early data.  There,
+   the server is able to send first.
+
+   Though that data has no replay risk, the data that a server might
+   send in any HTTP version without a request is unlikely to produce
+   side effects that might be a problem if replayed.
+
+   An origin can use early data to reduce the latency of settings or
+   pre-populate header compression state.  These both only apply to
+   HTTP/2 and HTTP/3.  These uses can avoid any replay attack risk, as
+   these do not cause side effects beyond the connection state.
+
+   For a gateway, the first flight of application data can be used to
+   make requests.  However, this data is sent prior to receiving client
+   certificates if those are used to authorize the origin server; see
+   Section 5.1.  This flight might be used for making a request to
+   authorize the origin server; see Section 5.
+
+8.  Scalability, Availability, and Connection Management
+
+   A gateway that is configured to make connections to an origin server
+   is able to make connections as needed.  Having the origin server be
+   responsible for connection establishment can mean that the gateway
+   cannot rely on being able to make new connection as demand increases.
+
+   This can mean that origin servers have a greater control over their
+   availability and service scaling.  Where an origin server that might
+   need to scale up to handle increased demand might otherwise need to
+   arrange for load balancing infrastructure, that becomes something
+   that the gateway assumes more responsibilty for.
+
+   As a passive participant, a gateway is not able to act if an origin
+   server goes offline.  The origin server is responsible for
+   establishing connections when it becomes available.
+
+   This can present scaling challenges as a gateway cannot make
+   additional connections on the assumption that origin servers will
+   scale to meet increased demand.  Gateways can attempt to make
+   additional requests over existing connections, but origin servers can
+   use protocol features designed to limit resource commitment -- such
+   as stream limits and flow control -- to manage load.
+
+   This document does not define any mechanism that might allow the
+   gateway to communicate changes in demand for capacity to origin
+   server instances.  Defining mechanisms to help with adding or
+   removing capacity on demand is a matter for future work.
+
+   The use of reversed HTTP/1.1 presents particular difficulty for
+   connection management, which is borne by the origin server.  The lack
+   of any concurrency features in that protocol means that origin
+   servers likely need to manage a pool of connections if the gateway
+   needs to handle requests with any amount of concurrency or volume.
+
+9.  Security Considerations
+
+   Using reversed HTTP changes the denial of service profile for origin
+   servers that rely on it.  Such servers are able to use different
+   tools to manage their reachability.
+
+   A gateway becomes a more central part of managing load, but the
+   gateway no longer has direct control over connection establishment.
+   This alters how gateways and origin servers need to be configured to
+   handle scaling, availability, and connections; see Section 8 for
+   details.
+
+   Other than these changes, the security considerations of HTTP and the
+   specific HTTP version in use apply in full.
+
+10.  IANA Considerations
+
+   TODO: Register ALPN labels.
+
+11.  References
+
+11.1.  Normative References
+
+   [ALPN]     Friedl, S., Popov, A., Langley, A., and E. Stephan,
+              "Transport Layer Security (TLS) Application-Layer Protocol
+              Negotiation Extension", RFC 7301, DOI 10.17487/RFC7301,
+              July 2014, <https://www.rfc-editor.org/rfc/rfc7301>.
+
+   [HTTP]     Fielding, R., Ed., Nottingham, M., Ed., and J. Reschke,
+              Ed., "HTTP Semantics", STD 97, RFC 9110,
+              DOI 10.17487/RFC9110, June 2022,
+              <https://www.rfc-editor.org/rfc/rfc9110>.
+
+   [HTTP-DGRAM]
+              Schinazi, D. and L. Pardue, "HTTP Datagrams and the
+              Capsule Protocol", RFC 9297, DOI 10.17487/RFC9297, August
+              2022, <https://www.rfc-editor.org/rfc/rfc9297>.
+
+   [HTTP/1.1] Fielding, R., Ed., Nottingham, M., Ed., and J. Reschke,
+              Ed., "HTTP/1.1", STD 99, RFC 9112, DOI 10.17487/RFC9112,
+              June 2022, <https://www.rfc-editor.org/rfc/rfc9112>.
+
+   [HTTP/2]   Thomson, M., Ed. and C. Benfield, Ed., "HTTP/2", RFC 9113,
+              DOI 10.17487/RFC9113, June 2022,
+              <https://www.rfc-editor.org/rfc/rfc9113>.
+
+   [HTTP/3]   Bishop, M., Ed., "HTTP/3", RFC 9114, DOI 10.17487/RFC9114,
+              June 2022, <https://www.rfc-editor.org/rfc/rfc9114>.
+
+   [QUIC]     Iyengar, J., Ed. and M. Thomson, Ed., "QUIC: A UDP-Based
+              Multiplexed and Secure Transport", RFC 9000,
+              DOI 10.17487/RFC9000, May 2021,
+              <https://www.rfc-editor.org/rfc/rfc9000>.
 
    [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
               Requirement Levels", BCP 14, RFC 2119,
@@ -103,12 +510,31 @@ Table of Contents
               2119 Key Words", BCP 14, RFC 8174, DOI 10.17487/RFC8174,
               May 2017, <https://www.rfc-editor.org/rfc/rfc8174>.
 
+11.2.  Informative References
+
+   [ORIGIN]   Nottingham, M. and E. Nygren, "The ORIGIN HTTP/2 Frame",
+              RFC 8336, DOI 10.17487/RFC8336, March 2018,
+              <https://www.rfc-editor.org/rfc/rfc8336>.
+
+   [RFC9440]  Campbell, B. and M. Bishop, "Client-Cert HTTP Header
+              Field", RFC 9440, DOI 10.17487/RFC9440, July 2023,
+              <https://www.rfc-editor.org/rfc/rfc9440>.
+
 Acknowledgments
 
-   TODO acknowledge.
+   This draft is based on discussions with many people.
+
+   Kazuho Oku
+
+   Additional contact information:
+
+      奥 一穂
+
+
+   and Andrew McGregor both made helpful contributions.
 
 Author's Address
 
-   Your Name Here
+   Martin Thomson
    Mozilla
-   Email: your.email@example.com
+   Email: mt@lowentropy.net
