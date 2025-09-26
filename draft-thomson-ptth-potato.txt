@@ -68,6 +68,7 @@ Copyright Notice
 Table of Contents
 
    1.  Introduction
+     1.1.  Comparative Notes
    2.  Conventions and Definitions
    3.  Overview and Scope
    4.  Reversed HTTP
@@ -128,6 +129,20 @@ Table of Contents
 
    This document defines reversed equivalents to HTTP/1.1 [HTTP/1.1],
    HTTP/2 [HTTP/2], and [HTTP/3].
+
+1.1.  Comparative Notes
+
+   This is one of a set of different options in this space.  Other
+   designs include reverse tunnels [I-D.kazuho-ptth-ptth] and reverse
+   HTTP transport [I-D.bt-httpbis-reverse-http].
+
+   These alternatives are all broadly capable of achieving the goal.
+
+   Key points of divergence exist around the use of tunnels (for reverse
+   tunnels) and how different roles are authenticated and authorized.
+
+   There are some minor differences in use of terminology, which need to
+   be cleared up.
 
 2.  Conventions and Definitions
 
@@ -511,6 +526,20 @@ Table of Contents
               May 2017, <https://www.rfc-editor.org/rfc/rfc8174>.
 
 11.2.  Informative References
+
+   [I-D.bt-httpbis-reverse-http]
+              Schwartz, B. M., Reddy.K, T., Boucadair, M., and P. S.
+              Tiesel, "Reverse HTTP Transport", Work in Progress,
+              Internet-Draft, draft-bt-httpbis-reverse-http-01, 23
+              October 2023, <https://datatracker.ietf.org/doc/html/
+              draft-bt-httpbis-reverse-http-01>.
+
+   [I-D.kazuho-ptth-ptth]
+              Oku, K., "Protocol for Transposed Transactions over HTTP",
+              Work in Progress, Internet-Draft, draft-kazuho-ptth-ptth-
+              00, 25 September 2025,
+              <https://datatracker.ietf.org/doc/html/draft-kazuho-ptth-
+              ptth-00>.
 
    [ORIGIN]   Nottingham, M. and E. Nygren, "The ORIGIN HTTP/2 Frame",
               RFC 8336, DOI 10.17487/RFC8336, March 2018,
