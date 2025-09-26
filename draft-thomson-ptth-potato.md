@@ -411,6 +411,10 @@ These requirements do not exist to provide protection against impersonation,
 which is generally the reason to require that a server establish authority.
 They exist to protect things like the confidentiality of responses.
 
+TODO: For discovery, should this use
+generic SVCB records, HTTPS records, or a new RR type?
+It seems like HTTPS will work just fine for this.
+
 
 # TLS Early Data {#early}
 
