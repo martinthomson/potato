@@ -45,6 +45,7 @@ informative:
 
 This document defines 🥔, a suite of reversed versions of HTTP for origin servers.
 
+
 --- middle
 
 # Introduction
@@ -90,6 +91,23 @@ This document defines reversed equivalents to
 HTTP/1.1 {{RFC9112}},
 HTTP/2 {{RFC9113}},
 and {{RFC9114}}.
+
+
+## Comparative Notes
+
+This is one of a set of different options in this space.
+Other designs include
+reverse tunnels {{?I-D.kazuho-ptth-ptth}}
+and reverse HTTP transport {{?I-D.bt-httpbis-reverse-http}}.
+
+These alternatives are all broadly capable of achieving the goal.
+
+Key points of divergence exist around the use of tunnels
+(for reverse tunnels)
+and how different roles are authenticated and authorized.
+
+There are some minor differences in use of terminology,
+which need to be cleared up.
 
 
 # Conventions and Definitions
