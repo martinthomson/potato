@@ -1,0 +1,1871 @@
+<!DOCTYPE html>
+<html lang="en" class="Internet-Draft">
+<head>
+<meta charset="utf-8">
+<meta content="Common,Latin" name="scripts">
+<meta content="initial-scale=1.0" name="viewport">
+<title>Potato - Reverse HTTP</title>
+<meta content="Martin Thomson" name="author">
+<meta content="
+       This document defines 🥔, a suite of reversed versions of HTTP for origin servers. 
+    " name="description">
+<meta content="xml2rfc 3.30.2" name="generator">
+<meta content="next generation" name="keyword">
+<meta content="unicorn" name="keyword">
+<meta content="sparkling distributed ledger" name="keyword">
+<meta content="draft-thomson-ptth-potato-latest" name="ietf.draft">
+<!-- Generator version information:
+  xml2rfc 3.30.2
+    Python 3.12.11
+    ConfigArgParse 1.7
+    google-i18n-address 3.1.1
+    intervaltree 3.1.0
+    Jinja2 3.1.6
+    lxml 5.3.1
+    platformdirs 4.4.0
+    pycountry 24.6.1
+    PyYAML 6.0.2
+    requests 2.32.5
+    setuptools 80.9.0
+    wcwidth 0.2.13
+-->
+<link href="draft-thomson-ptth-potato.xml" rel="alternate" type="application/rfc+xml">
+<link href="#copyright" rel="license">
+<style type="text/css">@font-face {
+  font-family: 'Lora';
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: local('Lora Italic'), local('Lora-Italic'), url('https://martinthomson.github.io/rfc-css/fonts/lora-italic-cyrillic-ext.woff2') format('woff2');
+  unicode-range: U+0460-052F, U+1C80-1C88, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+}
+@font-face {
+  font-family: 'Lora';
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: local('Lora Italic'), local('Lora-Italic'), url('https://martinthomson.github.io/rfc-css/fonts/lora-italic-cyrillic-ext.woff2') format('woff2');
+  unicode-range: U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+@font-face {
+  font-family: 'Lora';
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: local('Lora Italic'), local('Lora-Italic'), url('https://martinthomson.github.io/rfc-css/fonts/lora-italic-vietnamese.woff2') format('woff2');
+  unicode-range: U+0102-0103, U+0110-0111, U+1EA0-1EF9, U+20AB;
+}
+@font-face {
+  font-family: 'Lora';
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: local('Lora Italic'), local('Lora-Italic'), url('https://martinthomson.github.io/rfc-css/fonts/lora-italic-latin-ext.woff2') format('woff2');
+  unicode-range: U+0100-024F, U+0259, U+1E00-1EFF, U+2020, U+20A0-20AB, U+20AD-20CF, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
+@font-face {
+  font-family: 'Lora';
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: local('Lora Italic'), local('Lora-Italic'), url('https://martinthomson.github.io/rfc-css/fonts/lora-italic-latin.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'Lora';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: local('Lora Regular'), local('Lora-Regular'), url('https://martinthomson.github.io/rfc-css/fonts/lora-regular-cyrillic-ext.woff2') format('woff2');
+  unicode-range: U+0460-052F, U+1C80-1C88, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+}
+@font-face {
+  font-family: 'Lora';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: local('Lora Regular'), local('Lora-Regular'), url('https://martinthomson.github.io/rfc-css/fonts/lora-regular-cyrillic.woff2') format('woff2');
+  unicode-range: U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+@font-face {
+  font-family: 'Lora';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: local('Lora Regular'), local('Lora-Regular'), url('https://martinthomson.github.io/rfc-css/fonts/lora-regular-vietnamese.woff2') format('woff2');
+  unicode-range: U+0102-0103, U+0110-0111, U+1EA0-1EF9, U+20AB;
+}
+@font-face {
+  font-family: 'Lora';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: local('Lora Regular'), local('Lora-Regular'), url('https://martinthomson.github.io/rfc-css/fonts/lora-regular-latin-ext.woff2') format('woff2');
+  unicode-range: U+0100-024F, U+0259, U+1E00-1EFF, U+2020, U+20A0-20AB, U+20AD-20CF, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: 'Lora';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: local('Lora Regular'), local('Lora-Regular'), url('https://martinthomson.github.io/rfc-css/fonts/lora-regular-latin.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: 'Lora';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: local('Lora Bold'), local('Lora-Bold'), url('https://martinthomson.github.io/rfc-css/fonts/lora-bold-cyrillic-ext.woff2') format('woff2');
+  unicode-range: U+0460-052F, U+1C80-1C88, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+}
+@font-face {
+  font-family: 'Lora';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: local('Lora Bold'), local('Lora-Bold'), url('https://martinthomson.github.io/rfc-css/fonts/lora-bold-cyrillic.woff2') format('woff2');
+  unicode-range: U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+@font-face {
+  font-family: 'Lora';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: local('Lora Bold'), local('Lora-Bold'), url('https://martinthomson.github.io/rfc-css/fonts/lora-bold-vietnamese.woff2') format('woff2');
+  unicode-range: U+0102-0103, U+0110-0111, U+1EA0-1EF9, U+20AB;
+}
+@font-face {
+  font-family: 'Lora';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: local('Lora Bold'), local('Lora-Bold'), url('https://martinthomson.github.io/rfc-css/fonts/lora-bold-latin-ext.woff2') format('woff2');
+  unicode-range: U+0100-024F, U+0259, U+1E00-1EFF, U+2020, U+20A0-20AB, U+20AD-20CF, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: 'Lora';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: local('Lora Bold'), local('Lora-Bold'), url('https://martinthomson.github.io/rfc-css/fonts/lora-bold-latin.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'Lora';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: local('Lora SemiBold'), local('Lora-SemiBold'), url('https://martinthomson.github.io/rfc-css/fonts/lora-semibold-latin.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: 'Oxygen Mono';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: local('Oxygen Mono'), local('OxygenMono-Regular'), url('https://martinthomson.github.io/rfc-css/fonts/oxygenmono-regular-latin-ext.woff2') format('woff2');
+  unicode-range: U+0100-024F, U+0259, U+1E00-1EFF, U+2020, U+20A0-20AB, U+20AD-20CF, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: 'Oxygen Mono';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: local('Oxygen Mono'), local('OxygenMono-Regular'), url('https://martinthomson.github.io/rfc-css/fonts/oxygenmono-regular-latin.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: 'Sofia Sans Semi Condensed';
+  font-style: italic;
+  font-weight: 1 1000;
+  src: url('https://martinthomson.github.io/rfc-css/fonts/sofiasanssemicondensed-italic-cyrillic-ext.woff2') format('woff2');
+  unicode-range: U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+}
+@font-face {
+  font-family: 'Sofia Sans Semi Condensed';
+  font-style: italic;
+  font-weight: 1 1000;
+  src: url('https://martinthomson.github.io/rfc-css/fonts/sofiasanssemicondensed-italic-cyrillic.woff2') format('woff2');
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+@font-face {
+  font-family: 'Sofia Sans Semi Condensed';
+  font-style: italic;
+  font-weight: 1 1000;
+  src: url('https://martinthomson.github.io/rfc-css/fonts/sofiasanssemicondensed-italic-greek.woff2') format('woff2');
+  unicode-range: U+0370-0377, U+037A-037F, U+0384-038A, U+038C, U+038E-03A1, U+03A3-03FF;
+}
+@font-face {
+  font-family: 'Sofia Sans Semi Condensed';
+  font-style: italic;
+  font-weight: 1 1000;
+  src: url('https://martinthomson.github.io/rfc-css/fonts/sofiasanssemicondensed-italic-latin-ext.woff2') format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: 'Sofia Sans Semi Condensed';
+  font-style: italic;
+  font-weight: 1 1000;
+  src: url('https://martinthomson.github.io/rfc-css/fonts/sofiasanssemicondensed-italic-latin.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'Sofia Sans Semi Condensed';
+  font-style: normal;
+  font-weight: 1 1000;
+  src: url('https://martinthomson.github.io/rfc-css/fonts/sofiasanssemicondensed-regular-cyrillic-ext.woff2') format('woff2');
+  unicode-range: U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+}
+@font-face {
+  font-family: 'Sofia Sans Semi Condensed';
+  font-style: normal;
+  font-weight: 1 1000;
+  src: url('https://martinthomson.github.io/rfc-css/fonts/sofiasanssemicondensed-regular-cyrillic.woff2') format('woff2');
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+@font-face {
+  font-family: 'Sofia Sans Semi Condensed';
+  font-style: normal;
+  font-weight: 1 1000;
+  src: url('https://martinthomson.github.io/rfc-css/fonts/sofiasanssemicondensed-regular-greek.woff2') format('woff2');
+  unicode-range: U+0370-0377, U+037A-037F, U+0384-038A, U+038C, U+038E-03A1, U+03A3-03FF;
+}
+@font-face {
+  font-family: 'Sofia Sans Semi Condensed';
+  font-style: normal;
+  font-weight: 1 1000;
+  src: url('https://martinthomson.github.io/rfc-css/fonts/sofiasanssemicondensed-regular-latin-ext.woff2') format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: 'Sofia Sans Semi Condensed';
+  font-style: normal;
+  font-weight: 1 1000;
+  src: url('https://martinthomson.github.io/rfc-css/fonts/sofiasanssemicondensed-regular-latin.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+:root {
+  color-scheme: light dark;
+  --background-color: #fff;
+  --text-color: #222;
+  --title-color: #191919;
+  --link-color: #2a6496;
+  --highlight-color: #f9f9f9;
+  --line-color: #eee;
+  --pilcrow-weak: #ddd;
+  --pilcrow-strong: #bbb;
+  --small-font-size: 14.5px;
+  --font-mono: 'Oxygen Mono', monospace;
+  --font-title: "Sofia Sans Semi Condensed", sans-serif;
+  scrollbar-color: #bbb #eee;
+}
+body {
+  max-width: 600px;
+  margin: 75px auto;
+  padding: 0 5px;
+  color: var(--text-color);
+  background-color: var(--background-color);
+  font: 16px/22px "Lora", serif;
+  scroll-behavior: smooth;
+}
+
+.ears {
+  display: none;
+}
+
+/* headings */
+section {
+  clear: both;
+}
+.section-number {
+  padding-right: 0.5em;
+}
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-title);
+  font-weight: 680;
+  margin: 0.8em 0 0.3em;
+  font-size-adjust: 0.5;
+  color: var(--title-color);
+}
+h1#title {
+  font-size: 32px;
+  line-height: 40px;
+  clear: both;
+}
+h1#title, h1#rfcnum {
+  margin: 1.5em 0 0.2em;
+}
+h1#rfcnum + h1#title {
+  margin: 0.2em 0;
+}
+
+h1, h2, h3 {
+  font-size: 22px;
+  line-height: 27px;
+}
+h4, h5, h6 {
+  font-size: 20px;
+  line-height: 24px;
+}
+
+/* general structure */
+.author {
+  padding-bottom: 0.3em;
+  vertical-align: top;
+}
+#abstract+p {
+  font-size: 18px;
+  line-height: 24px;
+}
+#abstract+p code, #abstract+p samp, #abstract+p tt {
+  font-size: 16px;
+  line-height: 0;
+}
+
+p {
+  padding: 0;
+  margin: 0.5em 0;
+  text-align: left;
+}
+div {
+  margin: 0;
+}
+.alignRight.art-text {
+  background-color: var(--highlight-color);
+  border: 1px solid var(--line-color);
+  border-radius: 3px;
+  padding: 0.5em 1em 0;
+  margin-bottom: 0.5em;
+}
+.alignRight.art-text pre {
+  padding: 0;
+  width: auto;
+}
+.alignRight {
+  margin: 1em 0;
+}
+.alignRight > *:first-child {
+  border: none;
+  margin: 0;
+  float: right;
+  clear: both;
+}
+.alignRight > *:nth-child(2) {
+  clear: both;
+  display: block;
+  border: none;
+}
+svg {
+  display: block;
+}
+/* font-family isn't space-separated, but =~ will have to do */
+svg[font-family~="monospace" i], svg [font-family~="monospace" i] {
+  font-family: var(--font-mono);
+}
+.alignCenter.art-text {
+  background-color: var(--highlight-color);
+  border: 1px solid var(--line-color);
+  border-radius: 3px;
+  padding: 0.5em 1em 0;
+  margin-bottom: 0.5em;
+}
+.alignCenter.art-text pre {
+  padding: 0;
+  width: auto;
+}
+.alignCenter {
+  margin: 1em 0;
+}
+.alignCenter > *:first-child {
+  border: none;
+  /* this isn't optimal, but it's an existence proof.  PrinceXML doesn't
+     support flexbox yet.
+  */
+  display: table;
+  margin: 0 auto;
+}
+
+/* lists */
+ol, ul {
+  padding: 0;
+  margin: 0 0 0.5em 2em;
+  & :is(ol, ul) {
+    margin-left: 1em;
+  }
+}
+li {
+  margin: 0 0 0.25em 0;
+}
+ul.empty, .ulEmpty {
+  list-style-type: none;
+  & li {
+    margin-top: 0.5em;
+  }
+}
+:is(ul, ol).compact, .ulCompact, .olCompact {
+  margin: 0 0 0 2em;
+  & li {
+    margin: 0;
+    & :first-child { margin-top: 0; }
+    & :last-child { margin-bottom: 0; }
+  }
+}
+
+/* definition lists */
+dl {
+  clear: left;
+  --indent: 3ch;
+  /* --indent: attr(indent ch); not supported in any browser, but we can dream */
+  &.olPercent {
+    --indent: 5ch;
+    & > dt {
+      min-width: calc(var(--indent) - 2ch);
+    }
+  }
+  &.olPercent > dt {
+    float: none;
+  }
+
+  dl > dd > & {
+    margin-top: 0.5em;
+    margin-bottom: 0;
+  }
+}
+dl:not(.dlNewline) > dt {
+  float: left;
+  margin-right: 2ch;
+  min-width: 8ch;
+}
+dl > dd {
+  margin-bottom: .8em;
+  margin-left: var(--indent) !important; /* stupid element overrides */
+  min-height: 2ex;
+}
+:is(dl.compact, .dlCompact) > dd {
+  margin-bottom: 0;
+  & > :is(:first-child, .break:first-child + *) {
+    margin-top: 0;
+  }
+  & > :is(:last-child) {
+    margin-bottom: 0;
+  }
+}
+:is(dd, span).break {
+  display: none;
+}
+
+/* links */
+a, a[href].selfRef:hover {
+  text-decoration: none;
+}
+a[href] {
+  color: var(--link-color);
+}
+a[href].selfRef, .iref + a[href].internal {
+  color: var(--text-color);
+}
+a[href]:hover {
+  text-decoration: underline;
+}
+a[href].selfRef:hover {
+  background-color: var(--highlight-color);
+}
+a.xref:is(.cite, .auto), :is(#status-of-memo, #copyright) a {
+  white-space: nowrap;
+}
+
+/* Figures */
+tt, code, pre {
+  background-color: var(--highlight-color);
+  font: 14px/22px var(--font-mono);
+}
+tt, code {
+  /* changing the font for inline elements leads to different ascender
+     and descender heights; as we want to retain baseline alignment,
+     remove leading to avoid altering the final height of lines
+     note: this fails if these blocks take an entire line,
+     a different solution would be great */
+  line-height: 0;
+}
+:is(h1, h2, h3, h4, h5, h6) :is(tt, code) {
+  font-size: 84%;
+}
+pre {
+  border: 1px solid var(--line-color);
+  font-size: 13.5px;
+  line-height: 16px;
+  letter-spacing: -0.2px;
+  margin: 5px;
+  padding: 5px;
+}
+img {
+  max-width: 100%;
+}
+figure {
+  margin: 0.5em 0;
+  padding: 0;
+}
+figure blockquote {
+  margin: 0.8em 0.4em 0.4em;
+}
+figcaption, caption {
+  font-style: italic;
+  margin: 0.5em 1.5em;
+  text-align: left;
+  caption-side: bottom;
+}
+@media screen {
+  /* Auto-collapse boilerplate. */
+  :is(#status-of-memo, #copyright) p {
+    margin: -2px 0;
+    max-height: 0;
+    transition: max-height 2s ease, margin 0.5s ease 0.5s;
+    overflow: hidden;
+  }
+  :is(#status-of-memo, #copyright):hover p,
+  :is(#status-of-memo, #copyright) h2:target ~ p {
+    margin: 0.5em 0;
+    max-height: 500px;
+    overflow: auto;
+  }
+  pre, svg {
+    display: inline-block;
+    /* In the horizontal direction, sometimes people make over-sized figures.
+       Scrollbars for those is therefore necessary: auto adds them as necessary..
+       In the vertical direction, the line-height can combine with the font
+       asender/descender height to produce scrollbars: hidden avoids that. */
+    overflow: auto hidden;
+  }
+  pre {
+    max-width: 100%;
+    width: calc(100% - 22px - 1em);
+  }
+  svg {
+    max-width: calc(100% - 22px - 1em);
+  }
+  figure pre {
+    display: block;
+    width: calc(100% - 25px);
+  }
+  :is(pre, svg) + .pilcrow {
+    display: inline-block;
+    vertical-align: text-bottom;
+    padding-bottom: 8px;
+  }
+}
+
+/* aside, blockquote */
+aside, blockquote {
+  margin-left: 0;
+  padding: 0 2em;
+  font-style: italic;
+}
+blockquote {
+  margin: 1em 0;
+}
+cite {
+  display: block;
+  text-align: right;
+  font-style: italic;
+}
+
+/* tables */
+table {
+  width: auto;
+  max-width: 100%;
+  margin: 0 0 1em;
+  border-collapse: collapse;
+}
+table.right {
+  margin-left: auto;
+}
+table.center {
+  margin-left: auto;
+  margin-right: auto;
+}
+table.left {
+  margin-right: auto;
+}
+table .text-left {
+  text-align: left;
+}
+table .text-center {
+  text-align: center;
+}
+table .text-right {
+  text-align: right;
+}
+
+thead, tbody {
+  border: 1px solid var(--line-color);
+}
+th, td {
+  text-align: left;
+  vertical-align: top;
+  padding: 5px 10px;
+}
+th {
+  background-color: var(--line-color);
+}
+:is(tr:nth-child(2n), thead+tbody > tr:nth-child(2n+1)) > td {
+  background-color: var(--background-color);
+}
+:is(tr:nth-child(2n+1), thead+tbody > tr:nth-child(2n)) > td {
+  background-color: var(--highlight-color);
+}
+table caption {
+  margin: 0;
+  padding: 3px 0 3px 1em;
+}
+table p {
+  margin: 0;
+}
+
+/* pilcrow */
+a.pilcrow {
+  margin-left: 3px;
+  opacity: 0.2;
+  user-select: none;
+  &[href] {
+    color: var(--pilcrow-weak);
+    &:hover { text-decoration: none; }
+  }
+}
+@media not print {
+  :hover > a.pilcrow {
+    opacity: 1;
+  }
+  a.pilcrow[href]:hover {
+    color: var(--pilcrow-strong);
+    background-color: transparent;
+  }
+}
+@media print {
+  a.pilcrow {
+    display: none;
+  }
+}
+
+/* misc */
+hr {
+  border: 0;
+  border-top: 1px solid var(--line-color);
+}
+.bcp14 {
+  font-variant: small-caps;
+  font-weight: 600;
+  font-size: var(--small-font-size);
+}
+.role {
+  font-variant: all-small-caps;
+}
+sub, sup {
+  line-height: 1;
+  font-size: 80%;
+}
+
+/* info block */
+#identifiers {
+  margin: 0;
+  font-size: var(--small-font-size);
+  line-height: 18px;
+  --identifier-width: 15ch;
+  & dt {
+    width: var(--identifier-width);
+    min-width: var(--identifier-width);
+    clear: left;
+    float: left;
+    text-align: right;
+    margin-right: 1ch;
+  }
+  & dd {
+    margin: 0;
+    margin-left: calc(1em + var(--identifier-width)) !important;
+    min-width: 5em;
+  }
+  & .authors {
+    & .author {
+      display: inline-block;
+      margin-right: 1.5em;
+    }
+    & .org {
+      font-style: italic;
+    }
+  }
+}
+
+/* The prepared/rendered info at the very bottom of the page */
+.docInfo {
+  color: #999;
+  font-size: 0.9em;
+  font-style: italic;
+  margin-top: 2em;
+}
+.docInfo .prepared {
+  float: right;
+}
+
+/* table of contents */
+#toc {
+  padding: 0.75em 0 2em 0;
+  margin-bottom: 1em;
+
+  & nav {
+    & ul {
+      margin: 0 0.5em 0 0;
+      padding: 0;
+      list-style: none;
+    }
+    & li {
+      line-height: 1.3em;
+      margin: 2px 0;
+      padding-left: 1.2em;
+      text-indent: -1.2em;
+    }
+  }
+  & a.xref {
+    white-space: normal;
+  }
+}
+
+.references {
+  & > dt {
+    text-align: right;
+    font-weight: bold;
+    min-width: 10ch;
+    margin-right: 1.5ch;
+    &:target::before {
+      content: "⇒";
+      margin: 0 10px 0 -25px;
+    }
+  }
+  & > dd {
+    margin-left: 12ch !important;
+    overflow: visible;
+    & .refInstance {
+      margin-bottom: 0.8em;
+    }
+    & .ascii {
+      margin-bottom: 0.25em;
+    }
+  }
+}
+
+#rfc\.index\.index + ul {
+  margin-left: 0;
+}
+
+/* authors */
+address.vcard {
+  font-style: normal;
+  max-width: 20em;
+  margin: 1em auto 1em 0;
+
+  & .nameRole {
+    font-weight: 700;
+    margin-left: 0;
+  }
+  & .label {
+    margin: 0.5em 0;
+  }
+  & .type {
+    display: none;
+  }
+  & .alternative-contact {
+    margin: 0.5em 0 0.25em 0;
+  }
+  & .non-ascii {
+    margin: 0 0 0 2em;
+  }
+  & div.left {
+    text-align: left;
+  }
+  & div.right {
+    text-align: right;
+  }
+}
+
+hr.addr {
+  border-top: 1px dashed;
+  margin: 0;
+  color: #ddd;
+  max-width: calc(100% - 16px);
+}
+@media (min-width: 500px) {
+  #authors-addresses > section {
+    column-count: 2;
+    column-gap: 20px;
+  }
+  #authors-addresses > section > h2 {
+    column-span: all;
+  }
+  /* hack for break-inside: avoid-column */
+  #authors-addresses address {
+    display: inline-block;
+    break-inside: avoid-column;
+  }
+}
+
+/* Comments */
+.rfcEditorRemove p:first-of-type {
+  font-style: italic;
+}
+.cref {
+  background-color: rgba(249, 232, 105, 0.3);
+  padding: 2px 4px;
+}
+.crefSource {
+  font-style: italic;
+}
+
+@media screen {
+  #toc nav {
+    font-family: var(--font-title);
+    font-weight: 360;
+    & > ul { margin-bottom: 2em; }
+    & ul {
+      margin: 0 0 0 4px;
+      & :is(p, li) {
+        margin: 2px 0;
+      }
+    }
+  }
+  #toc a.toplink {
+    float: right;
+  }
+}
+@media not screen {
+  #toc a.toplink {
+    display: none;
+  }
+}
+
+
+/* TOC layout for smaller screens */
+@media screen and (max-width: 929px) {
+  #toc {
+    position: fixed;
+    z-index: 2;
+    top: 0;
+    right: 0;
+    padding: 1px 0 0 0;
+    margin: 0;
+    border-bottom: 1px solid #ccc;
+    opacity: 0.6;
+  }
+  #toc h2 {
+    margin: 0;
+    padding: 2px 0 2px 6px;
+    padding-right: 1em;
+    font-size: 18px;
+    line-height: 24px;
+    min-width: 190px;
+    text-align: right;
+    background-color: #444;
+    color: white;
+    cursor: pointer;
+    &::before { /* css hamburger */
+      float: right;
+      position: relative;
+      width: 1em;
+      height: 1px;
+      left: -164px;
+      margin: 8px 0 0 0;
+      background: white none repeat scroll 0 0;
+      box-shadow: 0 4px 0 0 white, 0 8px 0 0 white;
+      content: "";
+    }
+  }
+  #toc nav {
+    display: none;
+    background-color: var(--background-color);
+    padding: 0.5em 1em 1em;
+    overflow: auto;
+    overscroll-behavior: contain;
+    height: calc(100vh - 48px);
+    border-left: 1px solid #ddd;
+  }
+  #toc.active {
+    opacity: 1;
+    & nav { display: block; }
+  }
+  /* Make the collapsed ToC header render white on gray also when it's a link */
+  #toc h2 a,
+  #toc h2 a:is(:link, :focus, :hover),
+  #toc a.toplink,
+  #toc a.toplink:hover {
+    color: white;
+    background-color: #444;
+    text-decoration: none;
+  }
+  #toc a.toplink {
+    margin: 2px 0.5em 0;
+  }
+}
+
+/* TOC layout for wide screens */
+@media screen and (min-width: 930px) {
+  body {
+    padding-right: 360px;
+    padding-right: calc(min(180px + 20%, 500px));
+  }
+  #toc {
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    right: calc(50vw - 480px);
+    width: 312px;
+    margin: 0;
+    padding: 0;
+    z-index: 1;
+  }
+  #toc h2 {
+    margin: 0;
+    padding: 0.25em 1em 1em 0;
+  }
+  #toc nav {
+    display: block;
+    height: calc(90vh - 84px);
+    bottom: 0;
+    padding: 0.5em 0 2em;
+    overflow: auto;
+    overscroll-behavior: contain;
+    scrollbar-width: thin;
+  }
+  img { /* future proofing */
+    max-width: 100%;
+    height: auto;
+  }
+  #toc a.toplink {
+    margin: 8px 0.5em 0;
+  }
+}
+
+/* pagination */
+@media print {
+  body {
+    width: 100%;
+  }
+  p {
+    orphans: 3;
+    widows: 3;
+  }
+  #n-copyright-notice {
+    border-bottom: none;
+  }
+  #toc, #n-introduction {
+    page-break-before: always;
+  }
+  #toc {
+    border-top: none;
+    padding-top: 0;
+  }
+  figure, pre, .vcard {
+    page-break-inside: avoid;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    page-break-after: avoid;
+  }
+  :is(h2, h3, h4, h5, h6)+*, dd {
+    page-break-before: avoid;
+  }
+  pre {
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    font-size: 10pt;
+  }
+  table {
+    border: 1px solid #ddd;
+  }
+  td {
+    border-top: 1px solid #ddd;
+  }
+}
+
+@page :first {
+  padding-top: 0;
+  @top-left {
+    content: normal;
+    border: none;
+  }
+  @top-center {
+    content: normal;
+    border: none;
+  }
+  @top-right {
+    content: normal;
+    border: none;
+  }
+}
+
+@page {
+  size: A4;
+  margin-bottom: 45mm;
+  padding-top: 20px;
+}
+
+/* Dark mode. */
+@media (prefers-color-scheme: dark) {
+:root {
+  --background-color: #121212;
+  --text-color: #f0f0f0;
+  --title-color: #fff;
+  --link-color: #4da4f0;
+  --highlight-color: #282828;
+  --line-color: #444;
+  --pilcrow-weak: #444;
+  --pilcrow-strong: #666;
+  scrollbar-color: #777 #333;
+}
+}
+
+/* SVG Trick: a prefix match works because only black and white are allowed */
+svg :is([stroke="black"], [stroke^="#000"]) {
+  stroke: var(--text-color);
+}
+svg :is([stroke="white"], [stroke^="#fff"]) {
+  stroke: var(--background-color);
+}
+svg :is([fill="black"], [fill^="#000"], :not([fill])) {
+  fill: var(--text-color);
+}
+svg :is([fill="white"], [fill^="#fff"]) {
+  fill: var(--background-color);
+}
+</style>
+
+</head>
+<body class="xml2rfc">
+<table class="ears">
+<thead><tr>
+<td class="left">Internet-Draft</td>
+<td class="center">Potato - Reverse HTTP</td>
+<td class="right">September 2025</td>
+</tr></thead>
+<tfoot><tr>
+<td class="left">Thomson</td>
+<td class="center">Expires 30 March 2026</td>
+<td class="right">[Page]</td>
+</tr></tfoot>
+</table>
+<div id="external-metadata" class="document-information"></div>
+<div id="internal-metadata" class="document-information">
+<dl id="identifiers">
+<dt class="label-workgroup">Workgroup:</dt>
+<dd class="workgroup">Protocol for Transposed Transactions over HTTP</dd>
+<dt class="label-internet-draft">Internet-Draft:</dt>
+<dd class="internet-draft">draft-thomson-ptth-potato-latest</dd>
+<dt class="label-published">Published:</dt>
+<dd class="published">
+<time datetime="2025-09-26" class="published">26 September 2025</time>
+    </dd>
+<dt class="label-intended-status">Intended Status:</dt>
+<dd class="intended-status">Standards Track</dd>
+<dt class="label-expires">Expires:</dt>
+<dd class="expires"><time datetime="2026-03-30">30 March 2026</time></dd>
+<dt class="label-authors">Author:</dt>
+<dd class="authors">
+<div class="author">
+      <div class="author-name">M. Thomson</div>
+<div class="org">Mozilla</div>
+</div>
+</dd>
+</dl>
+</div>
+<h1 id="title">Potato - Reverse HTTP</h1>
+<section id="section-abstract">
+      <h2 id="abstract"><a href="#abstract" class="selfRef">Abstract</a></h2>
+<p id="section-abstract-1">This document defines 🥔, a suite of reversed versions of HTTP for origin servers.<a href="#section-abstract-1" class="pilcrow">¶</a></p>
+</section>
+<section class="note rfcEditorRemove" id="section-note.1">
+      <h2 id="name-about-this-document">
+<a href="#name-about-this-document" class="section-name selfRef">About This Document</a>
+      </h2>
+<p id="section-note.1-1">This note is to be removed before publishing as an RFC.<a href="#section-note.1-1" class="pilcrow">¶</a></p>
+<p id="section-note.1-2">
+        The latest revision of this draft can be found at <span><a href="https://martinthomson.github.io/potato/draft-thomson-ptth-potato.html">https://martinthomson.github.io/potato/draft-thomson-ptth-potato.html</a></span>.
+        Status information for this document may be found at <span><a href="https://datatracker.ietf.org/doc/draft-thomson-ptth-potato/">https://datatracker.ietf.org/doc/draft-thomson-ptth-potato/</a></span>.<a href="#section-note.1-2" class="pilcrow">¶</a></p>
+<p id="section-note.1-3">
+        Discussion of this document takes place on the
+        Protocol for Transposed Transactions over HTTP Working Group mailing list (<span><a href="mailto:ptth@ietf.org">mailto:ptth@ietf.org</a></span>),
+        which is archived at <span><a href="https://mailarchive.ietf.org/arch/browse/ptth/">https://mailarchive.ietf.org/arch/browse/ptth/</a></span>.
+        Subscribe at <span><a href="https://www.ietf.org/mailman/listinfo/ptth/">https://www.ietf.org/mailman/listinfo/ptth/</a></span>.<a href="#section-note.1-3" class="pilcrow">¶</a></p>
+<p id="section-note.1-4">Source for this draft and an issue tracker can be found at
+        <span><a href="https://github.com/martinthomson/potato">https://github.com/martinthomson/potato</a></span>.<a href="#section-note.1-4" class="pilcrow">¶</a></p>
+</section>
+<div id="status-of-memo">
+<section id="section-boilerplate.1">
+        <h2 id="name-status-of-this-memo">
+<a href="#name-status-of-this-memo" class="section-name selfRef">Status of This Memo</a>
+        </h2>
+<p id="section-boilerplate.1-1">
+        This Internet-Draft is submitted in full conformance with the
+        provisions of BCP 78 and BCP 79.<a href="#section-boilerplate.1-1" class="pilcrow">¶</a></p>
+<p id="section-boilerplate.1-2">
+        Internet-Drafts are working documents of the Internet Engineering Task
+        Force (IETF). Note that other groups may also distribute working
+        documents as Internet-Drafts. The list of current Internet-Drafts is
+        at <span><a href="https://datatracker.ietf.org/drafts/current/">https://datatracker.ietf.org/drafts/current/</a></span>.<a href="#section-boilerplate.1-2" class="pilcrow">¶</a></p>
+<p id="section-boilerplate.1-3">
+        Internet-Drafts are draft documents valid for a maximum of six months
+        and may be updated, replaced, or obsoleted by other documents at any
+        time. It is inappropriate to use Internet-Drafts as reference
+        material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
+<p id="section-boilerplate.1-4">
+        This Internet-Draft will expire on 30 March 2026.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="copyright">
+<section id="section-boilerplate.2">
+        <h2 id="name-copyright-notice">
+<a href="#name-copyright-notice" class="section-name selfRef">Copyright Notice</a>
+        </h2>
+<p id="section-boilerplate.2-1">
+            Copyright (c) 2025 IETF Trust and the persons identified as the
+            document authors. All rights reserved.<a href="#section-boilerplate.2-1" class="pilcrow">¶</a></p>
+<p id="section-boilerplate.2-2">
+            This document is subject to BCP 78 and the IETF Trust's Legal
+            Provisions Relating to IETF Documents
+            (<span><a href="https://trustee.ietf.org/license-info">https://trustee.ietf.org/license-info</a></span>) in effect on the date of
+            publication of this document. Please review these documents
+            carefully, as they describe your rights and restrictions with
+            respect to this document. Code Components extracted from this
+            document must include Revised BSD License text as described in
+            Section 4.e of the Trust Legal Provisions and are provided without
+            warranty as described in the Revised BSD License.<a href="#section-boilerplate.2-2" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="toc">
+<section id="section-toc.1">
+        <a href="#" onclick="scroll(0,0)" class="toplink">▲</a><h2 id="name-table-of-contents">
+<a href="#name-table-of-contents" class="section-name selfRef">Table of Contents</a>
+        </h2>
+<nav class="toc"><ul class="compact toc ulBare ulEmpty">
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.1">
+            <p id="section-toc.1-1.1.1" class="keepWithNext"><a href="#section-1" class="auto internal xref">1</a>.  <a href="#name-introduction" class="internal xref">Introduction</a></p>
+<ul class="compact toc ulBare ulEmpty">
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.1.2.1">
+                <p id="section-toc.1-1.1.2.1.1" class="keepWithNext"><a href="#section-1.1" class="auto internal xref">1.1</a>.  <a href="#name-comparative-notes" class="internal xref">Comparative Notes</a></p>
+</li>
+            </ul>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.2">
+            <p id="section-toc.1-1.2.1" class="keepWithNext"><a href="#section-2" class="auto internal xref">2</a>.  <a href="#name-conventions-and-definitions" class="internal xref">Conventions and Definitions</a></p>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.3">
+            <p id="section-toc.1-1.3.1"><a href="#section-3" class="auto internal xref">3</a>.  <a href="#name-overview-and-scope" class="internal xref">Overview and Scope</a></p>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.4">
+            <p id="section-toc.1-1.4.1"><a href="#section-4" class="auto internal xref">4</a>.  <a href="#name-reversed-http" class="internal xref">Reversed HTTP</a></p>
+<ul class="compact toc ulBare ulEmpty">
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.4.2.1">
+                <p id="section-toc.1-1.4.2.1.1"><a href="#section-4.1" class="auto internal xref">4.1</a>.  <a href="#name-reversed-http-11" class="internal xref">Reversed HTTP/1.1</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.4.2.2">
+                <p id="section-toc.1-1.4.2.2.1"><a href="#section-4.2" class="auto internal xref">4.2</a>.  <a href="#name-reversed-http-2" class="internal xref">Reversed HTTP/2</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.4.2.3">
+                <p id="section-toc.1-1.4.2.3.1"><a href="#section-4.3" class="auto internal xref">4.3</a>.  <a href="#name-reversed-http-3" class="internal xref">Reversed HTTP/3</a></p>
+</li>
+            </ul>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5">
+            <p id="section-toc.1-1.5.1"><a href="#section-5" class="auto internal xref">5</a>.  <a href="#name-authenticating-and-authoriz" class="internal xref">Authenticating and Authorizing Origin Servers</a></p>
+<ul class="compact toc ulBare ulEmpty">
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5.2.1">
+                <p id="section-toc.1-1.5.2.1.1"><a href="#section-5.1" class="auto internal xref">5.1</a>.  <a href="#name-tls-client-certificates" class="internal xref">TLS Client Certificates</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5.2.2">
+                <p id="section-toc.1-1.5.2.2.1"><a href="#section-5.2" class="auto internal xref">5.2</a>.  <a href="#name-http-request" class="internal xref">HTTP Request</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5.2.3">
+                <p id="section-toc.1-1.5.2.3.1"><a href="#section-5.3" class="auto internal xref">5.3</a>.  <a href="#name-authorization-for-limited-p" class="internal xref">Authorization for Limited Path Scope</a></p>
+</li>
+            </ul>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.6">
+            <p id="section-toc.1-1.6.1"><a href="#section-6" class="auto internal xref">6</a>.  <a href="#name-authenticating-gateways" class="internal xref">Authenticating Gateways</a></p>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.7">
+            <p id="section-toc.1-1.7.1"><a href="#section-7" class="auto internal xref">7</a>.  <a href="#name-tls-early-data" class="internal xref">TLS Early Data</a></p>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.8">
+            <p id="section-toc.1-1.8.1"><a href="#section-8" class="auto internal xref">8</a>.  <a href="#name-scalability-availability-an" class="internal xref">Scalability, Availability, and Connection Management</a></p>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.9">
+            <p id="section-toc.1-1.9.1"><a href="#section-9" class="auto internal xref">9</a>.  <a href="#name-security-considerations" class="internal xref">Security Considerations</a></p>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.10">
+            <p id="section-toc.1-1.10.1"><a href="#section-10" class="auto internal xref">10</a>. <a href="#name-iana-considerations" class="internal xref">IANA Considerations</a></p>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.11">
+            <p id="section-toc.1-1.11.1"><a href="#section-11" class="auto internal xref">11</a>. <a href="#name-references" class="internal xref">References</a></p>
+<ul class="compact toc ulBare ulEmpty">
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.11.2.1">
+                <p id="section-toc.1-1.11.2.1.1"><a href="#section-11.1" class="auto internal xref">11.1</a>.  <a href="#name-normative-references" class="internal xref">Normative References</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.11.2.2">
+                <p id="section-toc.1-1.11.2.2.1"><a href="#section-11.2" class="auto internal xref">11.2</a>.  <a href="#name-informative-references" class="internal xref">Informative References</a></p>
+</li>
+            </ul>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.12">
+            <p id="section-toc.1-1.12.1"><a href="#appendix-A" class="auto internal xref"></a><a href="#name-acknowledgments" class="internal xref">Acknowledgments</a></p>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.13">
+            <p id="section-toc.1-1.13.1"><a href="#appendix-B" class="auto internal xref"></a><a href="#name-authors-address" class="internal xref">Author's Address</a></p>
+</li>
+        </ul>
+</nav>
+</section>
+</div>
+<div id="introduction">
+<section id="section-1">
+      <h2 id="name-introduction">
+<a href="#section-1" class="section-number selfRef">1. </a><a href="#name-introduction" class="section-name selfRef">Introduction</a>
+      </h2>
+<p id="section-1-1">Operating an HTTP server that is accessable on the public internet
+creates an unmanageable risk of denial of service
+for many organizations,
+especially smaller operators.
+Content delivery networks (CDNs) are able to provide a measure of protection,
+but their services typically operate as gateways,
+which require that the origin server be reachable.<a href="#section-1-1" class="pilcrow">¶</a></p>
+<p id="section-1-2">An alternative deployment model has emerged as a means of addressing this concern,
+where, rather than have the gateway initiate a connection to the origin,
+the origin connects to the gateway.<a href="#section-1-2" class="pilcrow">¶</a></p>
+<div id="section-1-3">
+        <div class="alignLeft art-svg artwork" id="section-1-3.1">
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" height="256" width="544" viewBox="0 0 544 256" class="diagram" text-anchor="middle" font-family="monospace" font-size="13px" stroke-linecap="round">
+            <path d="M 8,32 L 8,64" fill="none" stroke="black"></path>
+            <path d="M 40,64 L 40,112" fill="none" stroke="black"></path>
+            <path d="M 40,144 L 40,240" fill="none" stroke="black"></path>
+            <path d="M 80,32 L 80,64" fill="none" stroke="black"></path>
+            <path d="M 128,32 L 128,64" fill="none" stroke="black"></path>
+            <path d="M 168,64 L 168,112" fill="none" stroke="black"></path>
+            <path d="M 168,144 L 168,240" fill="none" stroke="black"></path>
+            <path d="M 208,32 L 208,64" fill="none" stroke="black"></path>
+            <path d="M 264,32 L 264,64" fill="none" stroke="black"></path>
+            <path d="M 304,64 L 304,80" fill="none" stroke="black"></path>
+            <path d="M 304,144 L 304,168" fill="none" stroke="black"></path>
+            <path d="M 304,216 L 304,240" fill="none" stroke="black"></path>
+            <path d="M 352,32 L 352,64" fill="none" stroke="black"></path>
+            <path d="M 392,32 L 392,64" fill="none" stroke="black"></path>
+            <path d="M 424,64 L 424,112" fill="none" stroke="black"></path>
+            <path d="M 424,144 L 424,240" fill="none" stroke="black"></path>
+            <path d="M 448,160 L 448,224" fill="none" stroke="black"></path>
+            <path d="M 464,32 L 464,64" fill="none" stroke="black"></path>
+            <path d="M 8,32 L 80,32" fill="none" stroke="black"></path>
+            <path d="M 128,32 L 208,32" fill="none" stroke="black"></path>
+            <path d="M 264,32 L 352,32" fill="none" stroke="black"></path>
+            <path d="M 392,32 L 464,32" fill="none" stroke="black"></path>
+            <path d="M 8,64 L 80,64" fill="none" stroke="black"></path>
+            <path d="M 128,64 L 208,64" fill="none" stroke="black"></path>
+            <path d="M 264,64 L 352,64" fill="none" stroke="black"></path>
+            <path d="M 392,64 L 464,64" fill="none" stroke="black"></path>
+            <path d="M 176,94 L 304,94" fill="none" stroke="black"></path>
+            <path d="M 176,98 L 304,98" fill="none" stroke="black"></path>
+            <path d="M 400,94 L 424,94" fill="none" stroke="black"></path>
+            <path d="M 400,98 L 424,98" fill="none" stroke="black"></path>
+            <path d="M 16,128 Q 18,124.8 20,128 Q 22,131.2 24,128 Q 26,124.8 28,128 Q 30,131.2 32,128 Q 34,124.8 36,128 Q 38,131.2 40,128 Q 42,124.8 44,128 Q 46,131.2 48,128 Q 50,124.8 52,128 Q 54,131.2 56,128 Q 58,124.8 60,128 Q 62,131.2 64,128 Q 66,124.8 68,128 Q 70,131.2 72,128 Q 74,124.8 76,128 Q 78,131.2 80,128 Q 82,124.8 84,128 Q 86,131.2 88,128 Q 90,124.8 92,128 Q 94,131.2 96,128 Q 98,124.8 100,128 Q 102,131.2 104,128 Q 106,124.8 108,128 Q 110,131.2 112,128 Q 114,124.8 116,128 Q 118,131.2 120,128 Q 122,124.8 124,128 Q 126,131.2 128,128 Q 130,124.8 132,128 Q 134,131.2 136,128 Q 138,124.8 140,128 Q 142,131.2 144,128 Q 146,124.8 148,128 Q 150,131.2 152,128 Q 154,124.8 156,128 Q 158,131.2 160,128 Q 162,124.8 164,128 Q 166,131.2 168,128" fill="none" stroke="black"></path>
+            <path d="M 312,128 Q 314,124.8 316,128 Q 318,131.2 320,128 Q 322,124.8 324,128 Q 326,131.2 328,128 Q 330,124.8 332,128 Q 334,131.2 336,128 Q 338,124.8 340,128 Q 342,131.2 344,128 Q 346,124.8 348,128 Q 350,131.2 352,128 Q 354,124.8 356,128 Q 358,131.2 360,128 Q 362,124.8 364,128 Q 366,131.2 368,128 Q 370,124.8 372,128 Q 374,131.2 376,128 Q 378,124.8 380,128 Q 382,131.2 384,128 Q 386,124.8 388,128 Q 390,131.2 392,128 Q 394,124.8 396,128 Q 398,131.2 400,128 Q 402,124.8 404,128 Q 406,131.2 408,128 Q 410,124.8 412,128 Q 414,131.2 416,128 Q 418,124.8 420,128 Q 422,131.2 424,128 Q 426,124.8 428,128 Q 430,131.2 432,128 Q 434,124.8 436,128 Q 438,131.2 440,128 Q 442,124.8 444,128 Q 446,131.2 448,128 Q 450,124.8 452,128 Q 454,131.2 456,128" fill="none" stroke="black"></path>
+            <path d="M 40,160 L 56,160" fill="none" stroke="black"></path>
+            <path d="M 136,160 L 160,160" fill="none" stroke="black"></path>
+            <path d="M 168,176 L 184,176" fill="none" stroke="black"></path>
+            <path d="M 264,176 L 416,176" fill="none" stroke="black"></path>
+            <path d="M 176,208 L 320,208" fill="none" stroke="black"></path>
+            <path d="M 408,208 L 424,208" fill="none" stroke="black"></path>
+            <path d="M 48,224 L 64,224" fill="none" stroke="black"></path>
+            <path d="M 152,224 L 168,224" fill="none" stroke="black"></path>
+            <polygon class="arrowhead" points="424,176 412,170.4 412,181.6" fill="black" transform="rotate(0,416,176)"></polygon>
+            <polygon class="arrowhead" points="184,208 172,202.4 172,213.6" fill="black" transform="rotate(180,176,208)"></polygon>
+            <polygon class="arrowhead" points="184,96 172,90.4 172,101.6" fill="black" transform="rotate(180,176,96)"></polygon>
+            <polygon class="arrowhead" points="168,160 156,154.4 156,165.6" fill="black" transform="rotate(0,160,160)"></polygon>
+            <polygon class="arrowhead" points="56,224 44,218.4 44,229.6" fill="black" transform="rotate(180,48,224)"></polygon>
+            <g class="text">
+              <text x="44" y="52">Client</text>
+              <text x="168" y="52">Gateway</text>
+              <text x="308" y="52">Firewall</text>
+              <text x="428" y="52">Origin</text>
+              <text x="344" y="100">connect</text>
+              <text x="384" y="100">🥔</text>
+              <text x="304" y="116">|</text>
+              <text x="196" y="132">some</text>
+              <text x="236" y="132">time</text>
+              <text x="280" y="132">later</text>
+              <text x="96" y="164">request</text>
+              <text x="492" y="164">messages</text>
+              <text x="224" y="180">request</text>
+              <text x="496" y="180">exchanged</text>
+              <text x="304" y="196">|</text>
+              <text x="476" y="196">over</text>
+              <text x="364" y="212">response</text>
+              <text x="492" y="212">existing</text>
+              <text x="108" y="228">response</text>
+              <text x="500" y="228">connection</text>
+            </g>
+          </svg><a href="#section-1-3.1" class="pilcrow">¶</a>
+</div>
+</div>
+<p id="section-1-4">This arrangement greatly simplifies the configuration of firewalls,
+which are better able to authorize outward-bound connections.<a href="#section-1-4" class="pilcrow">¶</a></p>
+<p id="section-1-5">This document defines alternative, "reversed", versions of HTTP <span>[<a href="#HTTP" class="cite xref">HTTP</a>]</span> protocols.
+These protocols are all nearly identical to their "forward" counterparts,
+with the exception that the client and server roles are inverted
+after completing the transport and TLS layer establishment.<a href="#section-1-5" class="pilcrow">¶</a></p>
+<p id="section-1-6">This document defines reversed equivalents to
+HTTP/1.1 <span>[<a href="#RFC9112" class="cite xref">HTTP/1.1</a>]</span>,
+HTTP/2 <span>[<a href="#RFC9113" class="cite xref">HTTP/2</a>]</span>,
+and <span>[<a href="#RFC9114" class="cite xref">HTTP/3</a>]</span>.<a href="#section-1-6" class="pilcrow">¶</a></p>
+<div id="comparative-notes">
+<section id="section-1.1">
+        <h3 id="name-comparative-notes">
+<a href="#section-1.1" class="section-number selfRef">1.1. </a><a href="#name-comparative-notes" class="section-name selfRef">Comparative Notes</a>
+        </h3>
+<p id="section-1.1-1">This is one of a set of different options in this space.
+Other designs include
+reverse tunnels <span>[<a href="#I-D.kazuho-ptth-ptth" class="cite xref">I-D.kazuho-ptth-ptth</a>]</span>
+and reverse HTTP transport <span>[<a href="#I-D.bt-httpbis-reverse-http" class="cite xref">I-D.bt-httpbis-reverse-http</a>]</span>.<a href="#section-1.1-1" class="pilcrow">¶</a></p>
+<p id="section-1.1-2">These alternatives are all broadly capable of achieving the goal.<a href="#section-1.1-2" class="pilcrow">¶</a></p>
+<p id="section-1.1-3">Key points of divergence exist around the use of tunnels
+(for reverse tunnels)
+and how different roles are authenticated and authorized.<a href="#section-1.1-3" class="pilcrow">¶</a></p>
+<p id="section-1.1-4">There are some minor differences in use of terminology,
+which need to be cleared up.<a href="#section-1.1-4" class="pilcrow">¶</a></p>
+</section>
+</div>
+</section>
+</div>
+<div id="conventions-and-definitions">
+<section id="section-2">
+      <h2 id="name-conventions-and-definitions">
+<a href="#section-2" class="section-number selfRef">2. </a><a href="#name-conventions-and-definitions" class="section-name selfRef">Conventions and Definitions</a>
+      </h2>
+<p id="section-2-1">The key words "<span class="bcp14">MUST</span>", "<span class="bcp14">MUST NOT</span>", "<span class="bcp14">REQUIRED</span>", "<span class="bcp14">SHALL</span>", "<span class="bcp14">SHALL NOT</span>", "<span class="bcp14">SHOULD</span>", "<span class="bcp14">SHOULD NOT</span>", "<span class="bcp14">RECOMMENDED</span>", "<span class="bcp14">NOT RECOMMENDED</span>",
+"<span class="bcp14">MAY</span>", and "<span class="bcp14">OPTIONAL</span>" in this document are to be interpreted as
+described in BCP 14 <span>[<a href="#RFC2119" class="cite xref">RFC2119</a>]</span> <span>[<a href="#RFC8174" class="cite xref">RFC8174</a>]</span> when, and only when, they
+appear in all capitals, as shown here.<a href="#section-2-1" class="pilcrow">¶</a></p>
+<p id="section-2-2">This document uses terminology from <span>[<a href="#HTTP" class="cite xref">HTTP</a>]</span>.<a href="#section-2-2" class="pilcrow">¶</a></p>
+<p id="section-2-3">Because having roles reversed can be especially confusing,
+this document tries to be consistent in its use of language.<a href="#section-2-3" class="pilcrow">¶</a></p>
+<p id="section-2-4">The terms <em>client</em> and <em>server</em>,
+when unqualified,
+refer to the HTTP client and HTTP server roles respectively.<a href="#section-2-4" class="pilcrow">¶</a></p>
+<p id="section-2-5">In this document, a <em>gateway</em> will generally be the HTTP client
+and an <em>origin server</em> will generally be the HTTP server.
+These terms will be used where it makes sense.<a href="#section-2-5" class="pilcrow">¶</a></p>
+<p id="section-2-6">Where it is necessary to identify a client or server role
+outside of the context of reversed HTTP,
+the term will be qualified.
+This typically will use the protocol where the role is used.
+For example, "TLS client role" or "acting as QUIC client".<a href="#section-2-6" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="overview-and-scope">
+<section id="section-3">
+      <h2 id="name-overview-and-scope">
+<a href="#section-3" class="section-number selfRef">3. </a><a href="#name-overview-and-scope" class="section-name selfRef">Overview and Scope</a>
+      </h2>
+<p id="section-3-1">This document describes how to establish reversed HTTP connections.<a href="#section-3-1" class="pilcrow">¶</a></p>
+<p id="section-3-2">The overall approach is
+to allocate new Application-Layer Protocol Negotiation (ALPN) <span>[<a href="#ALPN" class="cite xref">ALPN</a>]</span>
+identifiers to each reversed HTTP version.<a href="#section-3-2" class="pilcrow">¶</a></p>
+<p id="section-3-3">The origin server acts in the client role
+for establishing the transport and security layers of a connection
+to the gateway, which provides a server for those layers.
+That is, for HTTP/1.1 and HTTP/2,
+the origin server is the TCP and TLS client
+and the gateway is the TCP and TLS server.
+For HTTP/3, the origin server is the QUIC client
+and the gateway is the QUIC server.<a href="#section-3-3" class="pilcrow">¶</a></p>
+<p id="section-3-4">If the gateway selects the reversed HTTP version
+in the protocol negotiation,
+the corresponding HTTP version is conducted
+with the usual roles reversed.
+The gateway becomes the HTTP client
+and the origin server becomes the HTTP server.
+No other changes are made to the protocol.<a href="#section-3-4" class="pilcrow">¶</a></p>
+<p id="section-3-5">The document explores some of the implications of this design,
+including authorization (<a href="#auth-gateway" class="auto internal xref">Section 6</a> and <a href="#auth-origin" class="auto internal xref">Section 5</a>),
+and interactions with some protocol features.
+However, there are numerous factors that are relevant
+when choosing an appropriate server deployment architecture.
+This document will address only those
+that are relevant to the design of the protocol
+and essential to its secure and correct operation.<a href="#section-3-5" class="pilcrow">¶</a></p>
+<p id="section-3-6">This document does not define a protocol
+that allows both endpoints to make requests over the same connection.
+Separate connections can be used
+if requests need to be exchanged in both directions.<a href="#section-3-6" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="reversed-http">
+<section id="section-4">
+      <h2 id="name-reversed-http">
+<a href="#section-4" class="section-number selfRef">4. </a><a href="#name-reversed-http" class="section-name selfRef">Reversed HTTP</a>
+      </h2>
+<p id="section-4-1">This section defines the basic operation of reversed HTTP
+for each major HTTP version.<a href="#section-4-1" class="pilcrow">¶</a></p>
+<p id="section-4-2">All versions of reversed HTTP require special handling
+for questions of server authority.
+Authorizing the origin server is discussed in <a href="#auth-origin" class="auto internal xref">Section 5</a>.
+Similarly the means by which a gateway authorizes
+an origin server are discussed in <a href="#auth-origin" class="auto internal xref">Section 5</a>.<a href="#section-4-2" class="pilcrow">¶</a></p>
+<p id="section-4-3">Most HTTP features,
+including extensions to specific HTTP versions,
+are unaffected by the reversal of the protocol.<a href="#section-4-3" class="pilcrow">¶</a></p>
+<p id="section-4-4">Only those features that depend on lower protocols layers
+that also depend on assumptions
+about how the the TLS or transport-layer role
+relates to the HTTP client or server role.
+Such features cannot be used without additional profiling.<a href="#section-4-4" class="pilcrow">¶</a></p>
+<p id="section-4-5">The features that cannot be used with reversed HTTP
+include:
+the Client-Cert HTTP field <span>[<a href="#RFC9440" class="cite xref">RFC9440</a>]</span>.<a href="#section-4-5" class="pilcrow">¶</a></p>
+<p id="section-4-6">A small adjustment to the operation of
+the HTTP/3 Datagram extension <span>[<a href="#HTTP-DGRAM" class="cite xref">HTTP-DGRAM</a>]</span>
+is described in <a href="#rh3" class="auto internal xref">Section 4.3</a>.<a href="#section-4-6" class="pilcrow">¶</a></p>
+<div id="rh1">
+<section id="section-4.1">
+        <h3 id="name-reversed-http-11">
+<a href="#section-4.1" class="section-number selfRef">4.1. </a><a href="#name-reversed-http-11" class="section-name selfRef">Reversed HTTP/1.1</a>
+        </h3>
+<p id="section-4.1-1">A reversed version of HTTP/1.1 <span>[<a href="#RFC9112" class="cite xref">HTTP/1.1</a>]</span>
+is identified by the ALPN label "rh1".<a href="#section-4.1-1" class="pilcrow">¶</a></p>
+<p id="section-4.1-2">To negotiate the use of reversed HTTP/1.1 protocol,
+an origin server advertises the "rh1" token
+in its TLS handshake using ALPN <span>[<a href="#ALPN" class="cite xref">ALPN</a>]</span>
+and a gateway selects that token.<a href="#section-4.1-2" class="pilcrow">¶</a></p>
+<p id="section-4.1-3">Once a TLS connection is established,
+the origin server (as a TLS client) becomes the HTTP server
+and the gateway (as TLS server) becomes the HTTP client.
+Messages sent by the gateway are HTTP requests
+and messages from the origin server are HTTP responses.<a href="#section-4.1-3" class="pilcrow">¶</a></p>
+<p id="section-4.1-4">HTTP/1.1 depends only on an undifferentiated stream of bytes.
+No special considerations apply to this version.<a href="#section-4.1-4" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="rh2">
+<section id="section-4.2">
+        <h3 id="name-reversed-http-2">
+<a href="#section-4.2" class="section-number selfRef">4.2. </a><a href="#name-reversed-http-2" class="section-name selfRef">Reversed HTTP/2</a>
+        </h3>
+<p id="section-4.2-1">A reversed version of HTTP/2 <span>[<a href="#RFC9113" class="cite xref">HTTP/2</a>]</span>
+is identified by the ALPN label "rh2".<a href="#section-4.2-1" class="pilcrow">¶</a></p>
+<p id="section-4.2-2">To negotiate the use of reversed HTTP/2 protocol,
+an origin server advertises the "rh2" token
+in its TLS handshake using ALPN <span>[<a href="#ALPN" class="cite xref">ALPN</a>]</span>
+and a gateway selects that token.<a href="#section-4.2-2" class="pilcrow">¶</a></p>
+<p id="section-4.2-3">Once a TLS connection is established,
+the origin server (as a TLS client) becomes the HTTP/2 server
+and the gateway (as TLS server) becomes the HTTP/2 client.
+Each send a preface (<span><a href="https://rfc-editor.org/rfc/rfc9113#section-3.4" class="relref">Section 3.4</a> of [<a href="#RFC9113" class="cite xref">HTTP/2</a>]</span>)
+and establishes an HTTP connection.<a href="#section-4.2-3" class="pilcrow">¶</a></p>
+<p id="section-4.2-4">HTTP/2 depends only on an undifferentiated stream of bytes.
+No changes are necessary to the base protocol.<a href="#section-4.2-4" class="pilcrow">¶</a></p>
+<p id="section-4.2-5">In operation, the gateway (as HTTP/2 client) initiates requests
+on odd-numbered streams.
+Any push promises from the origin server (as HTTP server)
+are sent on even-numbered streams.<a href="#section-4.2-5" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="rh3">
+<section id="section-4.3">
+        <h3 id="name-reversed-http-3">
+<a href="#section-4.3" class="section-number selfRef">4.3. </a><a href="#name-reversed-http-3" class="section-name selfRef">Reversed HTTP/3</a>
+        </h3>
+<p id="section-4.3-1">A reversed version of HTTP/3 <span>[<a href="#RFC9114" class="cite xref">HTTP/3</a>]</span>
+is identified by the ALPN label "rh3".<a href="#section-4.3-1" class="pilcrow">¶</a></p>
+<p id="section-4.3-2">To negotiate the use of reversed HTTP/3 protocol,
+an origin server advertises the "rh3" token
+in its QUIC handshake using ALPN <span>[<a href="#ALPN" class="cite xref">ALPN</a>]</span>
+and a gateway selects that token.<a href="#section-4.3-2" class="pilcrow">¶</a></p>
+<p id="section-4.3-3">Once a QUIC connection is established,
+the origin server (as a QUIC client) becomes the HTTP/3 server
+and the gateway (as QUIC server) becomes the HTTP/3 client.
+Each send a preface (<span><a href="https://rfc-editor.org/rfc/rfc9113#section-3.4" class="relref">Section 3.4</a> of [<a href="#RFC9113" class="cite xref">HTTP/2</a>]</span>)
+and establishes an HTTP connection.<a href="#section-4.3-3" class="pilcrow">¶</a></p>
+<p id="section-4.3-4">Unlike HTTP/2, the streaming layer that HTTP/3 uses
+is provided by QUIC.
+Therefore, the identifiers given to streams change.
+This should not be visible to the HTTP/3 layer;
+the HTTP/3 design generally does not depend on stream identifiers
+being in any particular form.<a href="#section-4.3-4" class="pilcrow">¶</a></p>
+<p id="section-4.3-5">One exception to this is the Quarter Stream ID concept
+introduced in <span><a href="https://rfc-editor.org/rfc/rfc9297#section-2.1" class="relref">Section 2.1</a> of [<a href="#HTTP-DGRAM" class="cite xref">HTTP-DGRAM</a>]</span>.
+Because requests in reversed HTTP/3 are made
+on bi-directional, server-initiated streams,
+those identifiers end with two bits (0b01);
+see <span><a href="https://rfc-editor.org/rfc/rfc9000#section-2.1" class="relref">Section 2.1</a> of [<a href="#QUIC" class="cite xref">QUIC</a>]</span>.
+To construct a Quarter Stream ID from a stream identifier,
+any remainder is discarded.
+To construct a stream identifier from a Quarter Stream ID
+in reversed HTTP/3,
+the value is multiplied by 4,
+then the stream type (0b01) is added.
+This adjustment only requires an understanding of the type of QUIC stream
+that the HTTP client uses to make requests.<a href="#section-4.3-5" class="pilcrow">¶</a></p>
+<p id="section-4.3-6">Any extension that makes similar assumptions
+about the structure of stream identifiers
+can be adjusted in a similar manner.<a href="#section-4.3-6" class="pilcrow">¶</a></p>
+</section>
+</div>
+</section>
+</div>
+<div id="auth-origin">
+<section id="section-5">
+      <h2 id="name-authenticating-and-authoriz">
+<a href="#section-5" class="section-number selfRef">5. </a><a href="#name-authenticating-and-authoriz" class="section-name selfRef">Authenticating and Authorizing Origin Servers</a>
+      </h2>
+<p id="section-5-1">Arrangements between gateways and origin servers
+are often privately arranged.
+Therefore, how a gateway chooses to authorize an origin server
+does not necessarily benefit from having a single, standard mechanism.<a href="#section-5-1" class="pilcrow">¶</a></p>
+<p id="section-5-2">This section describes a few options
+for origin server authentication.
+None of these approaches is mandated,
+as it is expected that private arrangements will be used
+in most deployments.<a href="#section-5-2" class="pilcrow">¶</a></p>
+<div id="client-cert">
+<section id="section-5.1">
+        <h3 id="name-tls-client-certificates">
+<a href="#section-5.1" class="section-number selfRef">5.1. </a><a href="#name-tls-client-certificates" class="section-name selfRef">TLS Client Certificates</a>
+        </h3>
+<p id="section-5.1-1">TLS client certificates can be used to authenticate TLS clients.
+That authentication could be used as the basis of authorization.<a href="#section-5.1-1" class="pilcrow">¶</a></p>
+<p id="section-5.1-2">The choice of how to authenticate a client certificate is complex.
+Multiple options are possible,
+each with different operational and deployment properties:<a href="#section-5.1-2" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-5.1-3.1">
+            <p id="section-5.1-3.1.1">The gateway could use the same public key infrastructure (PKI) as the certificate
+that the gateway itself offers (see <a href="#auth-gateway" class="auto internal xref">Section 6</a>).<a href="#section-5.1-3.1.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-5.1-3.2">
+            <p id="section-5.1-3.2.1">A completely separate PKI could be used.
+This includes a PKI managed by the gateway.<a href="#section-5.1-3.2.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-5.1-3.3">
+            <p id="section-5.1-3.3.1">Self-signed certificates could be mapped
+to specific authorizations.<a href="#section-5.1-3.3.1" class="pilcrow">¶</a></p>
+</li>
+        </ul>
+<p id="section-5.1-4">This option might introduce some challenges in deployment.
+Because the TLS connection that is established to the gateway
+uses the same endpoint that other clients,
+the TLS server software needs to make its protocol selection
+before deciding to request a client certificate.<a href="#section-5.1-4" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="http-request">
+<section id="section-5.2">
+        <h3 id="name-http-request">
+<a href="#section-5.2" class="section-number selfRef">5.2. </a><a href="#name-http-request" class="section-name selfRef">HTTP Request</a>
+        </h3>
+<p id="section-5.2-1">Once a reversed HTTP connection is established,
+the gateway could make a request to a pre-arranged resource.<a href="#section-5.2-1" class="pilcrow">¶</a></p>
+<p id="section-5.2-2">This request could be used to retrieve a bearer token
+that authorizes the origin server.
+A more complex request
+might involve the origin server producing a signed object
+that covers a challenge produced by the gateway.
+Responding to a challenge is a defense
+against the possibility of an attack
+that captures and replays a bearer token.<a href="#section-5.2-2" class="pilcrow">¶</a></p>
+<p id="section-5.2-3">TODO: Should this document define a protocol?<a href="#section-5.2-3" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="authorization-for-limited-path-scope">
+<section id="section-5.3">
+        <h3 id="name-authorization-for-limited-p">
+<a href="#section-5.3" class="section-number selfRef">5.3. </a><a href="#name-authorization-for-limited-p" class="section-name selfRef">Authorization for Limited Path Scope</a>
+        </h3>
+<p id="section-5.3-1">A gateway does not need to authorize an origin server
+to serve all requests for an origin.
+Nor does a gateway need to limit its authorization
+to a single origin.<a href="#section-5.3-1" class="pilcrow">¶</a></p>
+<p id="section-5.3-2">The choice of which requests are forwarded to an origin server
+is a matter for gateway policy.
+That policy might be guided by the choice of credential
+presented by the origin server.<a href="#section-5.3-2" class="pilcrow">¶</a></p>
+<p id="section-5.3-3">For instance, if a HTTP request is used
+to authorize the origin server,
+the response might include information
+that guides the gateway in determining
+which requests are forwarded over the connection.
+This could be as simple as
+having the origin server list path prefixes that it can serve
+or it could be bound to the credentials that are offered.<a href="#section-5.3-3" class="pilcrow">¶</a></p>
+<p id="section-5.3-4">This might be used to enable different deployment architectures
+where the one logical origin server is distributed
+across multiple instances,
+with different paths being served by different hosts.<a href="#section-5.3-4" class="pilcrow">¶</a></p>
+<p id="section-5.3-5">This approach is also compatible with a gateway
+that makes regular HTTP connections to some origin server nodes.
+A gateway might forward requests
+for the one origin
+to origin servers that use both regular and reversed HTTP
+based on whatever policy it chooses.<a href="#section-5.3-5" class="pilcrow">¶</a></p>
+</section>
+</div>
+</section>
+</div>
+<div id="auth-gateway">
+<section id="section-6">
+      <h2 id="name-authenticating-gateways">
+<a href="#section-6" class="section-number selfRef">6. </a><a href="#name-authenticating-gateways" class="section-name selfRef">Authenticating Gateways</a>
+      </h2>
+<p id="section-6-1">An origin server <span class="bcp14">MUST</span> authenticate a gateway
+unless an alternative means of authentication
+is privately arranged.<a href="#section-6-1" class="pilcrow">¶</a></p>
+<p id="section-6-2">In all reversed HTTP versions,
+when the the origin server establishes a TLS connection
+to the gateway,
+it confirms the identity of the gateway
+according to the rules of the respective, non-reversed, HTTP version.<a href="#section-6-2" class="pilcrow">¶</a></p>
+<p id="section-6-3">The rules in <span><a href="https://rfc-editor.org/rfc/rfc9110#section-4.3" class="relref">Section 4.3</a> of [<a href="#HTTP" class="cite xref">HTTP</a>]</span>
+regarding how clients determine whether a server can answer a request
+are applied in reverse.
+That is, an origin server that cannot successfully determine
+that a gateway is authoritative for resources
+<span class="bcp14">MUST NOT</span> answer requests from that gateway.<a href="#section-6-3" class="pilcrow">¶</a></p>
+<p id="section-6-4">Because the server and client roles are reversed,
+some methods for expanding the scope that a server can claim authority
+are invalidated.
+Mechanisms like the ORIGIN frame <span>[<a href="#ORIGIN" class="cite xref">ORIGIN</a>]</span> remain valid
+as a means of limiting scope.<a href="#section-6-4" class="pilcrow">¶</a></p>
+<p id="section-6-5">These requirements do not exist to provide protection against impersonation,
+which is generally the reason to require that a server establish authority.
+They exist to protect things like the confidentiality of responses.<a href="#section-6-5" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="early">
+<section id="section-7">
+      <h2 id="name-tls-early-data">
+<a href="#section-7" class="section-number selfRef">7. </a><a href="#name-tls-early-data" class="section-name selfRef">TLS Early Data</a>
+      </h2>
+<p id="section-7-1">A gateway can use TLS session resumption
+to make establishing connections more efficient.
+This includes the possibility of enabling TLS early data.<a href="#section-7-1" class="pilcrow">¶</a></p>
+<p id="section-7-2">Unlike in regular HTTP
+where a client can use TLS early data to make a request,
+reversed HTTP gives the server an opportunity to speak first.
+This has little value,
+as an HTTP server generally has to wait for requests.<a href="#section-7-2" class="pilcrow">¶</a></p>
+<p id="section-7-3">This provides similar properties to the first flight of server application data
+in a TLS 1.3 connection without early data.
+There, the server is able to send first.<a href="#section-7-3" class="pilcrow">¶</a></p>
+<p id="section-7-4">Though that data has no replay risk,
+the data that a server might send in any HTTP version without a request
+is unlikely to produce side effects
+that might be a problem if replayed.<a href="#section-7-4" class="pilcrow">¶</a></p>
+<p id="section-7-5">An origin can use early data to
+reduce the latency of settings
+or pre-populate header compression state.
+These both only apply to HTTP/2 and HTTP/3.
+These uses can avoid any replay attack risk,
+as these do not cause side effects beyond the connection state.<a href="#section-7-5" class="pilcrow">¶</a></p>
+<p id="section-7-6">For a gateway,
+the first flight of application data can be used to make requests.
+However, this data is sent prior to receiving client certificates
+if those are used to authorize the origin server; see <a href="#client-cert" class="auto internal xref">Section 5.1</a>.
+This flight might be used for making a request to authorize the origin server;
+see <a href="#auth-origin" class="auto internal xref">Section 5</a>.<a href="#section-7-6" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="sacm">
+<section id="section-8">
+      <h2 id="name-scalability-availability-an">
+<a href="#section-8" class="section-number selfRef">8. </a><a href="#name-scalability-availability-an" class="section-name selfRef">Scalability, Availability, and Connection Management</a>
+      </h2>
+<p id="section-8-1">A gateway that is configured to make connections to an origin server
+is able to make connections as needed.
+Having the origin server be responsible for connection establishment
+can mean that the gateway cannot rely on being able
+to make new connection as demand increases.<a href="#section-8-1" class="pilcrow">¶</a></p>
+<p id="section-8-2">This can mean that origin servers have a greater control
+over their availability and service scaling.
+Where an origin server that might need to scale up
+to handle increased demand
+might otherwise need to arrange for load balancing infrastructure,
+that becomes something that the gateway assumes more responsibilty for.<a href="#section-8-2" class="pilcrow">¶</a></p>
+<p id="section-8-3">As a passive participant,
+a gateway is not able to act if an origin server goes offline.
+The origin server is responsible for establishing connections
+when it becomes available.<a href="#section-8-3" class="pilcrow">¶</a></p>
+<p id="section-8-4">This can present scaling challenges
+as a gateway cannot make additional connections
+on the assumption that origin servers will scale to meet increased demand.
+Gateways can attempt to make additional requests over existing connections,
+but origin servers can use protocol features
+designed to limit resource commitment --
+such as stream limits and flow control --
+to manage load.<a href="#section-8-4" class="pilcrow">¶</a></p>
+<p id="section-8-5">This document does not define any mechanism
+that might allow the gateway to communicate
+changes in demand for capacity to origin server instances.
+Defining mechanisms to help
+with adding or removing capacity on demand
+is a matter for future work.<a href="#section-8-5" class="pilcrow">¶</a></p>
+<p id="section-8-6">The use of reversed HTTP/1.1 presents particular difficulty
+for connection management,
+which is borne by the origin server.
+The lack of any concurrency features in that protocol
+means that origin servers likely need to manage
+a pool of connections
+if the gateway needs to handle requests
+with any amount of concurrency or volume.<a href="#section-8-6" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="security-considerations">
+<section id="section-9">
+      <h2 id="name-security-considerations">
+<a href="#section-9" class="section-number selfRef">9. </a><a href="#name-security-considerations" class="section-name selfRef">Security Considerations</a>
+      </h2>
+<p id="section-9-1">Using reversed HTTP changes the denial of service profile
+for origin servers that rely on it.
+Such servers are able to use different tools
+to manage their reachability.<a href="#section-9-1" class="pilcrow">¶</a></p>
+<p id="section-9-2">A gateway becomes a more central part of managing load,
+but the gateway no longer has direct control over connection establishment.
+This alters how gateways and origin servers need to be configured
+to handle scaling, availability, and connections;
+see <a href="#sacm" class="auto internal xref">Section 8</a> for details.<a href="#section-9-2" class="pilcrow">¶</a></p>
+<p id="section-9-3">Other than these changes, the security considerations of HTTP
+and the specific HTTP version in use apply in full.<a href="#section-9-3" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="iana-considerations">
+<section id="section-10">
+      <h2 id="name-iana-considerations">
+<a href="#section-10" class="section-number selfRef">10. </a><a href="#name-iana-considerations" class="section-name selfRef">IANA Considerations</a>
+      </h2>
+<p id="section-10-1">TODO: Register ALPN labels.<a href="#section-10-1" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="sec-combined-references">
+<section id="section-11">
+      <h2 id="name-references">
+<a href="#section-11" class="section-number selfRef">11. </a><a href="#name-references" class="section-name selfRef">References</a>
+      </h2>
+<div id="sec-normative-references">
+<section id="section-11.1">
+        <h3 id="name-normative-references">
+<a href="#section-11.1" class="section-number selfRef">11.1. </a><a href="#name-normative-references" class="section-name selfRef">Normative References</a>
+        </h3>
+<dl class="references">
+<dt id="ALPN">[ALPN]</dt>
+        <dd>
+<span class="refAuthor">Friedl, S.</span>, <span class="refAuthor">Popov, A.</span>, <span class="refAuthor">Langley, A.</span>, and <span class="refAuthor">E. Stephan</span>, <span class="refTitle">"Transport Layer Security (TLS) Application-Layer Protocol Negotiation Extension"</span>, <span class="seriesInfo">RFC 7301</span>, <span class="seriesInfo">DOI 10.17487/RFC7301</span>, <time datetime="2014-07" class="refDate">July 2014</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc7301">https://www.rfc-editor.org/rfc/rfc7301</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="HTTP">[HTTP]</dt>
+        <dd>
+<span class="refAuthor">Fielding, R., Ed.</span>, <span class="refAuthor">Nottingham, M., Ed.</span>, and <span class="refAuthor">J. Reschke, Ed.</span>, <span class="refTitle">"HTTP Semantics"</span>, <span class="seriesInfo">STD 97</span>, <span class="seriesInfo">RFC 9110</span>, <span class="seriesInfo">DOI 10.17487/RFC9110</span>, <time datetime="2022-06" class="refDate">June 2022</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc9110">https://www.rfc-editor.org/rfc/rfc9110</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="HTTP-DGRAM">[HTTP-DGRAM]</dt>
+        <dd>
+<span class="refAuthor">Schinazi, D.</span> and <span class="refAuthor">L. Pardue</span>, <span class="refTitle">"HTTP Datagrams and the Capsule Protocol"</span>, <span class="seriesInfo">RFC 9297</span>, <span class="seriesInfo">DOI 10.17487/RFC9297</span>, <time datetime="2022-08" class="refDate">August 2022</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc9297">https://www.rfc-editor.org/rfc/rfc9297</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC9112">[HTTP/1.1]</dt>
+        <dd>
+<span class="refAuthor">Fielding, R., Ed.</span>, <span class="refAuthor">Nottingham, M., Ed.</span>, and <span class="refAuthor">J. Reschke, Ed.</span>, <span class="refTitle">"HTTP/1.1"</span>, <span class="seriesInfo">STD 99</span>, <span class="seriesInfo">RFC 9112</span>, <span class="seriesInfo">DOI 10.17487/RFC9112</span>, <time datetime="2022-06" class="refDate">June 2022</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc9112">https://www.rfc-editor.org/rfc/rfc9112</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC9113">[HTTP/2]</dt>
+        <dd>
+<span class="refAuthor">Thomson, M., Ed.</span> and <span class="refAuthor">C. Benfield, Ed.</span>, <span class="refTitle">"HTTP/2"</span>, <span class="seriesInfo">RFC 9113</span>, <span class="seriesInfo">DOI 10.17487/RFC9113</span>, <time datetime="2022-06" class="refDate">June 2022</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc9113">https://www.rfc-editor.org/rfc/rfc9113</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC9114">[HTTP/3]</dt>
+        <dd>
+<span class="refAuthor">Bishop, M., Ed.</span>, <span class="refTitle">"HTTP/3"</span>, <span class="seriesInfo">RFC 9114</span>, <span class="seriesInfo">DOI 10.17487/RFC9114</span>, <time datetime="2022-06" class="refDate">June 2022</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc9114">https://www.rfc-editor.org/rfc/rfc9114</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="QUIC">[QUIC]</dt>
+        <dd>
+<span class="refAuthor">Iyengar, J., Ed.</span> and <span class="refAuthor">M. Thomson, Ed.</span>, <span class="refTitle">"QUIC: A UDP-Based Multiplexed and Secure Transport"</span>, <span class="seriesInfo">RFC 9000</span>, <span class="seriesInfo">DOI 10.17487/RFC9000</span>, <time datetime="2021-05" class="refDate">May 2021</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc9000">https://www.rfc-editor.org/rfc/rfc9000</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC2119">[RFC2119]</dt>
+        <dd>
+<span class="refAuthor">Bradner, S.</span>, <span class="refTitle">"Key words for use in RFCs to Indicate Requirement Levels"</span>, <span class="seriesInfo">BCP 14</span>, <span class="seriesInfo">RFC 2119</span>, <span class="seriesInfo">DOI 10.17487/RFC2119</span>, <time datetime="1997-03" class="refDate">March 1997</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc2119">https://www.rfc-editor.org/rfc/rfc2119</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC8174">[RFC8174]</dt>
+      <dd>
+<span class="refAuthor">Leiba, B.</span>, <span class="refTitle">"Ambiguity of Uppercase vs Lowercase in RFC 2119 Key Words"</span>, <span class="seriesInfo">BCP 14</span>, <span class="seriesInfo">RFC 8174</span>, <span class="seriesInfo">DOI 10.17487/RFC8174</span>, <time datetime="2017-05" class="refDate">May 2017</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc8174">https://www.rfc-editor.org/rfc/rfc8174</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+</dl>
+</section>
+</div>
+<div id="sec-informative-references">
+<section id="section-11.2">
+        <h3 id="name-informative-references">
+<a href="#section-11.2" class="section-number selfRef">11.2. </a><a href="#name-informative-references" class="section-name selfRef">Informative References</a>
+        </h3>
+<dl class="references">
+<dt id="I-D.bt-httpbis-reverse-http">[I-D.bt-httpbis-reverse-http]</dt>
+        <dd>
+<span class="refAuthor">Schwartz, B. M.</span>, <span class="refAuthor">Reddy.K, T.</span>, <span class="refAuthor">Boucadair, M.</span>, and <span class="refAuthor">P. S. Tiesel</span>, <span class="refTitle">"Reverse HTTP Transport"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-bt-httpbis-reverse-http-01</span>, <time datetime="2023-10-23" class="refDate">23 October 2023</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-bt-httpbis-reverse-http-01">https://datatracker.ietf.org/doc/html/draft-bt-httpbis-reverse-http-01</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="I-D.kazuho-ptth-ptth">[I-D.kazuho-ptth-ptth]</dt>
+        <dd>
+<span class="refAuthor">Oku, K.</span>, <span class="refTitle">"Protocol for Transposed Transactions over HTTP"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-kazuho-ptth-ptth-00</span>, <time datetime="2025-09-25" class="refDate">25 September 2025</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-kazuho-ptth-ptth-00">https://datatracker.ietf.org/doc/html/draft-kazuho-ptth-ptth-00</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="ORIGIN">[ORIGIN]</dt>
+        <dd>
+<span class="refAuthor">Nottingham, M.</span> and <span class="refAuthor">E. Nygren</span>, <span class="refTitle">"The ORIGIN HTTP/2 Frame"</span>, <span class="seriesInfo">RFC 8336</span>, <span class="seriesInfo">DOI 10.17487/RFC8336</span>, <time datetime="2018-03" class="refDate">March 2018</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc8336">https://www.rfc-editor.org/rfc/rfc8336</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC9440">[RFC9440]</dt>
+      <dd>
+<span class="refAuthor">Campbell, B.</span> and <span class="refAuthor">M. Bishop</span>, <span class="refTitle">"Client-Cert HTTP Header Field"</span>, <span class="seriesInfo">RFC 9440</span>, <span class="seriesInfo">DOI 10.17487/RFC9440</span>, <time datetime="2023-07" class="refDate">July 2023</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc9440">https://www.rfc-editor.org/rfc/rfc9440</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+</dl>
+</section>
+</div>
+</section>
+</div>
+<div id="acknowledgments">
+<section id="appendix-A">
+      <h2 id="name-acknowledgments">
+<a href="#name-acknowledgments" class="section-name selfRef">Acknowledgments</a>
+      </h2>
+<p id="appendix-A-1">This draft is based on discussions with many people.<a href="#appendix-A-1" class="pilcrow">¶</a></p>
+<address class="vcard">
+<div class="ascii">
+<div dir="auto" class="left"><span class="fn nameRole">Kazuho Oku</span></div>
+</div>
+<div class="alternative-contact">Additional contact information:</div>
+<div class="non-ascii">
+<div dir="auto" class="left"><span class="fn nameRole">奥 一穂</span></div>
+</div>
+</address>
+<p id="appendix-A-2">and <span class="contact-name">Andrew McGregor</span> both made helpful contributions.<a href="#appendix-A-2" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="authors-addresses">
+<section id="appendix-B">
+      <h2 id="name-authors-address">
+<a href="#name-authors-address" class="section-name selfRef">Author's Address</a>
+      </h2>
+<address class="vcard">
+        <div dir="auto" class="left"><span class="fn nameRole">Martin Thomson</span></div>
+<div dir="auto" class="left"><span class="org">Mozilla</span></div>
+<div class="email">
+<span>Email:</span>
+<a href="mailto:mt@lowentropy.net" class="email">mt@lowentropy.net</a>
+</div>
+</address>
+</section>
+</div>
+<script>const toc = document.getElementById("toc");
+toc.querySelector("h2").addEventListener("click", e => {
+  toc.classList.toggle("active");
+});
+toc.querySelector("nav").addEventListener("click", e => {
+  toc.classList.remove("active");
+});
+</script>
+</body>
+</html>
