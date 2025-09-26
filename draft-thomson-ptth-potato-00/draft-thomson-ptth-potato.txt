@@ -397,6 +397,10 @@ Table of Contents
    establish authority.  They exist to protect things like the
    confidentiality of responses.
 
+   TODO: For discovery, should this use generic SVCB records, HTTPS
+   records, or a new RR type?  It seems like HTTPS will work just fine
+   for this.
+
 7.  TLS Early Data
 
    A gateway can use TLS session resumption to make establishing
