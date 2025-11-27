@@ -91,7 +91,7 @@ after completing the transport and TLS layer establishment.
 This document defines reversed equivalents to
 HTTP/1.1 {{RFC9112}},
 HTTP/2 {{RFC9113}},
-and {{RFC9114}}.
+and HTTP/3 {{RFC9114}}.
 
 
 ## Comparative Notes
