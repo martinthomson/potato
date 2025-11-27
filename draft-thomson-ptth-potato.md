@@ -1,5 +1,6 @@
 ---
-title: "Potato - Reverse HTTP"
+title: "🥔 - Reverse HTTP"
+abbrev: "🥔"
 category: std
 
 docname: draft-thomson-ptth-potato-latest
@@ -262,8 +263,6 @@ and a gateway selects that token.
 Once a QUIC connection is established,
 the origin server (as a QUIC client) becomes the HTTP/3 server
 and the gateway (as QUIC server) becomes the HTTP/3 client.
-Each send a preface ({{Section 3.4 of RFC9113}})
-and establishes an HTTP connection.
 
 Unlike HTTP/2, the streaming layer that HTTP/3 uses
 is provided by QUIC.
@@ -285,7 +284,8 @@ in reversed HTTP/3,
 the value is multiplied by 4,
 then the stream type (0b01) is added.
 This adjustment only requires an understanding of the type of QUIC stream
-that the HTTP client uses to make requests.
+that the HTTP client uses to make requests,
+which works for regular HTTP/3 as well.
 
 Any extension that makes similar assumptions
 about the structure of stream identifiers
@@ -306,7 +306,7 @@ as it is expected that private arrangements will be used
 in most deployments.
 
 
-## TLS Client Certificates {#client-cert}
+## TLS Client Certificates {#auth-cert}
 
 TLS client certificates can be used to authenticate TLS clients.
 That authentication could be used as the basis of authorization.
@@ -331,7 +331,7 @@ the TLS server software needs to make its protocol selection
 before deciding to request a client certificate.
 
 
-## HTTP Request
+## HTTP Request {#auth-http}
 
 Once a reversed HTTP connection is established,
 the gateway could make a request to a pre-arranged resource.
@@ -447,9 +447,9 @@ as these do not cause side effects beyond the connection state.
 For a gateway,
 the first flight of application data can be used to make requests.
 However, this data is sent prior to receiving client certificates
-if those are used to authorize the origin server; see {{client-cert}}.
-This flight might be used for making a request to authorize the origin server;
-see {{auth-origin}}.
+if those are used to authorize the origin server; see {{auth-cert}}.
+This flight might be used to initiate a request to authorize the origin server,
+such as the option described in {{auth-http}}.
 
 
 # Scalability, Availability, and Connection Management {#sacm}
@@ -458,7 +458,7 @@ A gateway that is configured to make connections to an origin server
 is able to make connections as needed.
 Having the origin server be responsible for connection establishment
 can mean that the gateway cannot rely on being able
-to make new connection as demand increases.
+to make new connections as demand increases.
 
 This can mean that origin servers have a greater control
 over their availability and service scaling.
@@ -492,8 +492,8 @@ The use of reversed HTTP/1.1 presents particular difficulty
 for connection management,
 which is borne by the origin server.
 The lack of any concurrency features in that protocol
-means that origin servers likely need to manage
-a pool of connections
+means that origin servers that use reversed HTTP/1.1
+will need to manage a pool of connections
 if the gateway needs to handle requests
 with any amount of concurrency or volume.
 
@@ -527,5 +527,5 @@ TODO: Register ALPN labels.
 {:numbered="false"}
 
 This draft is based on discussions with many people.
-<contact asciiFullname="Kazuho Oku" fullname="奥 一穂"/>
+Both <contact asciiFullname="Kazuho Oku" fullname="奥 一穂"/>
 and {{{Andrew McGregor}}} both made helpful contributions.
