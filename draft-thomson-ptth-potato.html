@@ -4,30 +4,29 @@
 <meta charset="utf-8">
 <meta content="Common,Latin" name="scripts">
 <meta content="initial-scale=1.0" name="viewport">
-<title>Potato - Reverse HTTP</title>
+<title>🥔 - Reverse HTTP</title>
 <meta content="Martin Thomson" name="author">
 <meta content="
        This document defines 🥔, a suite of reversed versions of HTTP for origin servers. 
     " name="description">
-<meta content="xml2rfc 3.30.2" name="generator">
+<meta content="xml2rfc 3.31.0" name="generator">
 <meta content="next generation" name="keyword">
 <meta content="unicorn" name="keyword">
 <meta content="sparkling distributed ledger" name="keyword">
 <meta content="draft-thomson-ptth-potato-latest" name="ietf.draft">
 <!-- Generator version information:
-  xml2rfc 3.30.2
-    Python 3.12.11
+  xml2rfc 3.31.0
+    Python 3.12.12
     ConfigArgParse 1.7
     google-i18n-address 3.1.1
     intervaltree 3.1.0
     Jinja2 3.1.6
     lxml 5.3.1
-    platformdirs 4.4.0
+    platformdirs 4.5.0
     pycountry 24.6.1
     PyYAML 6.0.2
     requests 2.32.5
-    setuptools 80.9.0
-    wcwidth 0.2.13
+    wcwidth 0.2.14
 -->
 <link href="draft-thomson-ptth-potato.xml" rel="alternate" type="application/rfc+xml">
 <link href="#copyright" rel="license">
@@ -1045,12 +1044,12 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <table class="ears">
 <thead><tr>
 <td class="left">Internet-Draft</td>
-<td class="center">Potato - Reverse HTTP</td>
-<td class="right">September 2025</td>
+<td class="center">🥔</td>
+<td class="right">November 2025</td>
 </tr></thead>
 <tfoot><tr>
 <td class="left">Thomson</td>
-<td class="center">Expires 30 March 2026</td>
+<td class="center">Expires 31 May 2026</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1063,12 +1062,12 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <dd class="internet-draft">draft-thomson-ptth-potato-latest</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2025-09-26" class="published">26 September 2025</time>
+<time datetime="2025-11-27" class="published">27 November 2025</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Standards Track</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2026-03-30">30 March 2026</time></dd>
+<dd class="expires"><time datetime="2026-05-31">31 May 2026</time></dd>
 <dt class="label-authors">Author:</dt>
 <dd class="authors">
 <div class="author">
@@ -1078,7 +1077,7 @@ svg :is([fill="white"], [fill^="#fff"]) {
 </dd>
 </dl>
 </div>
-<h1 id="title">Potato - Reverse HTTP</h1>
+<h1 id="title">🥔 - Reverse HTTP</h1>
 <section id="section-abstract">
       <h2 id="abstract"><a href="#abstract" class="selfRef">Abstract</a></h2>
 <p id="section-abstract-1">This document defines 🥔, a suite of reversed versions of HTTP for origin servers.<a href="#section-abstract-1" class="pilcrow">¶</a></p>
@@ -1118,7 +1117,7 @@ svg :is([fill="white"], [fill^="#fff"]) {
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 30 March 2026.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 31 May 2026.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1488,9 +1487,7 @@ in its QUIC handshake using ALPN <span>[<a href="#ALPN" class="cite xref">ALPN</
 and a gateway selects that token.<a href="#section-4.3-2" class="pilcrow">¶</a></p>
 <p id="section-4.3-3">Once a QUIC connection is established,
 the origin server (as a QUIC client) becomes the HTTP/3 server
-and the gateway (as QUIC server) becomes the HTTP/3 client.
-Each send a preface (<span><a href="https://rfc-editor.org/rfc/rfc9113#section-3.4" class="relref">Section 3.4</a> of [<a href="#RFC9113" class="cite xref">HTTP/2</a>]</span>)
-and establishes an HTTP connection.<a href="#section-4.3-3" class="pilcrow">¶</a></p>
+and the gateway (as QUIC server) becomes the HTTP/3 client.<a href="#section-4.3-3" class="pilcrow">¶</a></p>
 <p id="section-4.3-4">Unlike HTTP/2, the streaming layer that HTTP/3 uses
 is provided by QUIC.
 Therefore, the identifiers given to streams change.
@@ -1510,7 +1507,8 @@ in reversed HTTP/3,
 the value is multiplied by 4,
 then the stream type (0b01) is added.
 This adjustment only requires an understanding of the type of QUIC stream
-that the HTTP client uses to make requests.<a href="#section-4.3-5" class="pilcrow">¶</a></p>
+that the HTTP client uses to make requests,
+which works for regular HTTP/3 as well.<a href="#section-4.3-5" class="pilcrow">¶</a></p>
 <p id="section-4.3-6">Any extension that makes similar assumptions
 about the structure of stream identifiers
 can be adjusted in a similar manner.<a href="#section-4.3-6" class="pilcrow">¶</a></p>
@@ -1532,7 +1530,7 @@ for origin server authentication.
 None of these approaches is mandated,
 as it is expected that private arrangements will be used
 in most deployments.<a href="#section-5-2" class="pilcrow">¶</a></p>
-<div id="client-cert">
+<div id="auth-cert">
 <section id="section-5.1">
         <h3 id="name-tls-client-certificates">
 <a href="#section-5.1" class="section-number selfRef">5.1. </a><a href="#name-tls-client-certificates" class="section-name selfRef">TLS Client Certificates</a>
@@ -1563,7 +1561,7 @@ the TLS server software needs to make its protocol selection
 before deciding to request a client certificate.<a href="#section-5.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
-<div id="http-request">
+<div id="auth-http">
 <section id="section-5.2">
         <h3 id="name-http-request">
 <a href="#section-5.2" class="section-number selfRef">5.2. </a><a href="#name-http-request" class="section-name selfRef">HTTP Request</a>
@@ -1677,9 +1675,9 @@ as these do not cause side effects beyond the connection state.<a href="#section
 <p id="section-7-6">For a gateway,
 the first flight of application data can be used to make requests.
 However, this data is sent prior to receiving client certificates
-if those are used to authorize the origin server; see <a href="#client-cert" class="auto internal xref">Section 5.1</a>.
-This flight might be used for making a request to authorize the origin server;
-see <a href="#auth-origin" class="auto internal xref">Section 5</a>.<a href="#section-7-6" class="pilcrow">¶</a></p>
+if those are used to authorize the origin server; see <a href="#auth-cert" class="auto internal xref">Section 5.1</a>.
+This flight might be used to initiate a request to authorize the origin server,
+such as the option described in <a href="#auth-http" class="auto internal xref">Section 5.2</a>.<a href="#section-7-6" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="sacm">
@@ -1691,7 +1689,7 @@ see <a href="#auth-origin" class="auto internal xref">Section 5</a>.<a href="#se
 is able to make connections as needed.
 Having the origin server be responsible for connection establishment
 can mean that the gateway cannot rely on being able
-to make new connection as demand increases.<a href="#section-8-1" class="pilcrow">¶</a></p>
+to make new connections as demand increases.<a href="#section-8-1" class="pilcrow">¶</a></p>
 <p id="section-8-2">This can mean that origin servers have a greater control
 over their availability and service scaling.
 Where an origin server that might need to scale up
@@ -1720,8 +1718,8 @@ is a matter for future work.<a href="#section-8-5" class="pilcrow">¶</a></p>
 for connection management,
 which is borne by the origin server.
 The lack of any concurrency features in that protocol
-means that origin servers likely need to manage
-a pool of connections
+means that origin servers that use reversed HTTP/1.1
+will need to manage a pool of connections
 if the gateway needs to handle requests
 with any amount of concurrency or volume.<a href="#section-8-6" class="pilcrow">¶</a></p>
 </section>
@@ -1834,17 +1832,9 @@ and the specific HTTP version in use apply in full.<a href="#section-9-3" class=
       <h2 id="name-acknowledgments">
 <a href="#name-acknowledgments" class="section-name selfRef">Acknowledgments</a>
       </h2>
-<p id="appendix-A-1">This draft is based on discussions with many people.<a href="#appendix-A-1" class="pilcrow">¶</a></p>
-<address class="vcard">
-<div class="ascii">
-<div dir="auto" class="left"><span class="fn nameRole">Kazuho Oku</span></div>
-</div>
-<div class="alternative-contact">Additional contact information:</div>
-<div class="non-ascii">
-<div dir="auto" class="left"><span class="fn nameRole">奥 一穂</span></div>
-</div>
-</address>
-<p id="appendix-A-2">and <span class="contact-name">Andrew McGregor</span> both made helpful contributions.<a href="#appendix-A-2" class="pilcrow">¶</a></p>
+<p id="appendix-A-1">This draft is based on discussions with many people.
+Both <span class="contact-name"><span class="non-ascii">奥 一穂</span> (<span class="ascii">Kazuho Oku</span>)</span>
+and <span class="contact-name">Andrew McGregor</span> both made helpful contributions.<a href="#appendix-A-1" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="authors-addresses">

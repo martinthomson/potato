@@ -4,11 +4,11 @@
 
 Protocol for Transposed Transactions over HTTP                M. Thomson
 Internet-Draft                                                   Mozilla
-Intended status: Standards Track                       26 September 2025
-Expires: 30 March 2026
+Intended status: Standards Track                        27 November 2025
+Expires: 31 May 2026
 
 
-                         Potato - Reverse HTTP
+                            🥔 - Reverse HTTP
                     draft-thomson-ptth-potato-latest
 
 Abstract
@@ -49,7 +49,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 30 March 2026.
+   This Internet-Draft will expire on 31 May 2026.
 
 Copyright Notice
 
@@ -274,8 +274,7 @@ Table of Contents
 
    Once a QUIC connection is established, the origin server (as a QUIC
    client) becomes the HTTP/3 server and the gateway (as QUIC server)
-   becomes the HTTP/3 client.  Each send a preface (Section 3.4 of
-   [HTTP/2]) and establishes an HTTP connection.
+   becomes the HTTP/3 client.
 
    Unlike HTTP/2, the streaming layer that HTTP/3 uses is provided by
    QUIC.  Therefore, the identifiers given to streams change.  This
@@ -292,7 +291,7 @@ Table of Contents
    in reversed HTTP/3, the value is multiplied by 4, then the stream
    type (0b01) is added.  This adjustment only requires an understanding
    of the type of QUIC stream that the HTTP client uses to make
-   requests.
+   requests, which works for regular HTTP/3 as well.
 
    Any extension that makes similar assumptions about the structure of
    stream identifiers can be adjusted in a similar manner.
@@ -428,15 +427,17 @@ Table of Contents
    For a gateway, the first flight of application data can be used to
    make requests.  However, this data is sent prior to receiving client
    certificates if those are used to authorize the origin server; see
-   Section 5.1.  This flight might be used for making a request to
-   authorize the origin server; see Section 5.
+   Section 5.1.  This flight might be used to initiate a request to
+   authorize the origin server, such as the option described in
+   Section 5.2.
 
 8.  Scalability, Availability, and Connection Management
 
    A gateway that is configured to make connections to an origin server
    is able to make connections as needed.  Having the origin server be
    responsible for connection establishment can mean that the gateway
-   cannot rely on being able to make new connection as demand increases.
+   cannot rely on being able to make new connections as demand
+   increases.
 
    This can mean that origin servers have a greater control over their
    availability and service scaling.  Where an origin server that might
@@ -463,8 +464,9 @@ Table of Contents
    The use of reversed HTTP/1.1 presents particular difficulty for
    connection management, which is borne by the origin server.  The lack
    of any concurrency features in that protocol means that origin
-   servers likely need to manage a pool of connections if the gateway
-   needs to handle requests with any amount of concurrency or volume.
+   servers that use reversed HTTP/1.1 will need to manage a pool of
+   connections if the gateway needs to handle requests with any amount
+   of concurrency or volume.
 
 9.  Security Considerations
 
@@ -555,16 +557,8 @@ Table of Contents
 
 Acknowledgments
 
-   This draft is based on discussions with many people.
-
-   Kazuho Oku
-
-   Additional contact information:
-
-      奥 一穂
-
-
-   and Andrew McGregor both made helpful contributions.
+   This draft is based on discussions with many people.  Both 奥 一穂
+   (Kazuho Oku) and Andrew McGregor both made helpful contributions.
 
 Author's Address
 
