@@ -128,7 +128,7 @@ Table of Contents
    establishment.
 
    This document defines reversed equivalents to HTTP/1.1 [HTTP/1.1],
-   HTTP/2 [HTTP/2], and [HTTP/3].
+   HTTP/2 [HTTP/2], and HTTP/3 [HTTP/3].
 
 1.1.  Comparative Notes
 
