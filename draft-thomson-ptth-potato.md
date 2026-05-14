@@ -1,5 +1,5 @@
 ---
-title: "🥔 - Reverse HTTP"
+title: "🥔 (Potato) - Reverse HTTP"
 abbrev: "🥔"
 category: std
 
@@ -44,7 +44,8 @@ informative:
 
 --- abstract
 
-This document defines 🥔, a suite of reversed versions of HTTP for origin servers.
+This document defines 🥔 (Potato),
+a suite of reversed versions of HTTP for origin servers.
 
 
 --- middle
@@ -55,9 +56,12 @@ Operating an HTTP server that is accessable on the public internet
 creates an unmanageable risk of denial of service
 for many organizations,
 especially smaller operators.
-Content delivery networks (CDNs) are able to provide a measure of protection,
-but their services typically operate as gateways,
-which require that the origin server be reachable.
+Content delivery networks (CDNs) are able to provide a measure of protection.
+This helps, but only to a degree.
+A CDN typically operates as a gateway,
+which imposes requirements on origin servers
+for reachability, security, and scalability
+that can be operationally challenging.
 
 An alternative deployment model has emerged as a means of addressing this concern,
 where, rather than have the gateway initiate a connection to the origin,
@@ -80,8 +84,11 @@ the origin connects to the gateway.
     |               |                |              |
 ~~~
 
-This arrangement greatly simplifies the configuration of firewalls,
+This arrangement has several advantages.
+It greatly simplifies the configuration of firewalls,
 which are better able to authorize outward-bound connections.
+It also changes the way that the origin scales up
+in the case where multiple server instances are needed.
 
 This document defines alternative, "reversed", versions of HTTP {{HTTP}} protocols.
 These protocols are all nearly identical to their "forward" counterparts,
@@ -173,14 +180,22 @@ This document does not define a protocol
 that allows both endpoints to make requests over the same connection.
 Separate connections can be used
 if requests need to be exchanged in both directions.
+Alternatively, tunnels (e.g., CONNECT or variants {{?RFC9298}})
+within a regular HTTP connection
+and a 🥔 variant can use that tunnel.
+Finally, a 🥔 connection could also be established
+and a tunnel with 🥔 variant inside,
+but the role inversions
+and the authentication and authorization that are involved
+could be more confusing than helpful.
 
 
 # Reversed HTTP
 
-This section defines the basic operation of reversed HTTP
+This section defines the basic operation of 🥔
 for each major HTTP version.
 
-All versions of reversed HTTP require special handling
+All versions of 🥔 require special handling
 for questions of server authority.
 Authorizing the origin server is discussed in {{auth-origin}}.
 Similarly the means by which a gateway authorizes
@@ -196,7 +211,7 @@ about how the the TLS or transport-layer role
 relates to the HTTP client or server role.
 Such features cannot be used without additional profiling.
 
-The features that cannot be used with reversed HTTP
+The features that cannot be used with 🥔
 include:
 the Client-Cert HTTP field {{?RFC9440}}.
 
@@ -205,13 +220,13 @@ the HTTP/3 Datagram extension {{!HTTP-DGRAM=RFC9297}}
 is described in {{rh3}}.
 
 
-## Reversed HTTP/1.1 {#rh1}
+## 🥔 for HTTP/1.1 {#rh1}
 
 A reversed version of HTTP/1.1 {{RFC9112}}
-is identified by the ALPN label "rh1".
+is identified by the ALPN label "ph1".
 
-To negotiate the use of reversed HTTP/1.1 protocol,
-an origin server advertises the "rh1" token
+To negotiate the use of 🥔 for HTTP/1.1,
+an origin server advertises the "ph1" token
 in its TLS handshake using ALPN {{ALPN}}
 and a gateway selects that token.
 
@@ -225,13 +240,13 @@ HTTP/1.1 depends only on an undifferentiated stream of bytes.
 No special considerations apply to this version.
 
 
-## Reversed HTTP/2 {#rh2}
+## 🥔 for HTTP/2 {#rh2}
 
 A reversed version of HTTP/2 {{RFC9113}}
-is identified by the ALPN label "rh2".
+is identified by the ALPN label "ph2".
 
-To negotiate the use of reversed HTTP/2 protocol,
-an origin server advertises the "rh2" token
+To negotiate the use of 🥔 for HTTP/2,
+an origin server advertises the "ph2" token
 in its TLS handshake using ALPN {{ALPN}}
 and a gateway selects that token.
 
@@ -245,18 +260,19 @@ HTTP/2 depends only on an undifferentiated stream of bytes.
 No changes are necessary to the base protocol.
 
 In operation, the gateway (as HTTP/2 client) initiates requests
-on odd-numbered streams.
+on odd-numbered streams,
+just like a regular HTTP/2 connection.
 Any push promises from the origin server (as HTTP server)
 are sent on even-numbered streams.
 
 
-## Reversed HTTP/3 {#rh3}
+## 🥔 for HTTP/3 {#rh3}
 
 A reversed version of HTTP/3 {{RFC9114}}
-is identified by the ALPN label "rh3".
+is identified by the ALPN label "ph3".
 
-To negotiate the use of reversed HTTP/3 protocol,
-an origin server advertises the "rh3" token
+To negotiate the use of 🥔 for HTTP/3,
+an origin server advertises the "ph3" token
 in its QUIC handshake using ALPN {{ALPN}}
 and a gateway selects that token.
 
@@ -286,6 +302,10 @@ then the stream type (0b01) is added.
 This adjustment only requires an understanding of the type of QUIC stream
 that the HTTP client uses to make requests,
 which works for regular HTTP/3 as well.
+
+{:aside}
+> Note that the same Quarter Stream ID adjustment is safe to use
+> in a regular HTTP/3 implementation of HTTP datagrams.
 
 Any extension that makes similar assumptions
 about the structure of stream identifiers
@@ -324,26 +344,39 @@ each with different operational and deployment properties:
 * Self-signed certificates could be mapped
   to specific authorizations.
 
-This option might introduce some challenges in deployment.
+This option might introduce some challenges in implementation or deployment.
 Because the TLS connection that is established to the gateway
-uses the same endpoint that other clients,
-the TLS server software needs to make its protocol selection
+uses the same endpoint as other clients,
+the TLS server software would need to make its protocol selection
 before deciding to request a client certificate.
 
 
 ## HTTP Request {#auth-http}
 
-Once a reversed HTTP connection is established,
+Once a 🥔 connection is established,
 the gateway could make a request to a pre-arranged resource.
 
-This request could be used to retrieve a bearer token
+This request could be used to retrieve a shared secret
 that authorizes the origin server.
-A more complex request
+
+~~~http
+GET /some/prearranged/resource HTTP/1.1
+Host: origin.example
+
+~~~
+~~~http
+HTTP/1.1 200 OK
+
+{some prearranged secret}
+~~~
+
+However, this is trivially vulnerable
+to impersonation attack
+if an adversary is able to capture the secret.
+
+A marginally more complex and more secure exchange
 might involve the origin server producing a signed object
 that covers a challenge produced by the gateway.
-Responding to a challenge is a defense
-against the possibility of an attack
-that captures and replays a bearer token.
 
 TODO: Should this document define a protocol?
 
@@ -352,15 +385,19 @@ TODO: Should this document define a protocol?
 
 A gateway does not need to authorize an origin server
 to serve all requests for an origin.
+A gateway might direct only a subset of URLs to a specific origin.
+
 Nor does a gateway need to limit its authorization
 to a single origin.
+A gateway could send requests for multiple origins,
+varying host or port as configured.
 
 The choice of which requests are forwarded to an origin server
 is a matter for gateway policy.
 That policy might be guided by the choice of credential
 presented by the origin server.
 
-For instance, if a HTTP request is used
+If a HTTP request is used
 to authorize the origin server,
 the response might include information
 that guides the gateway in determining
@@ -388,11 +425,11 @@ An origin server MUST authenticate a gateway
 unless an alternative means of authentication
 is privately arranged.
 
-In all reversed HTTP versions,
+In all 🥔 variants,
 when the the origin server establishes a TLS connection
 to the gateway,
 it confirms the identity of the gateway
-according to the rules of the respective, non-reversed, HTTP version.
+according to the rules of the respective, non-🥔, HTTP version.
 
 The rules in {{Section 4.3 of HTTP}}
 regarding how clients determine whether a server can answer a request
@@ -402,7 +439,7 @@ that a gateway is authoritative for resources
 MUST NOT answer requests from that gateway.
 
 Because the server and client roles are reversed,
-some methods for expanding the scope that a server can claim authority
+some methods for expanding the scope that a server can claim authority for
 are invalidated.
 Mechanisms like the ORIGIN frame {{?ORIGIN=RFC8336}} remain valid
 as a means of limiting scope.
@@ -456,8 +493,10 @@ such as the option described in {{auth-http}}.
 
 A gateway that is configured to make connections to an origin server
 is able to make connections as needed.
-Having the origin server be responsible for connection establishment
-can mean that the gateway cannot rely on being able
+The origin server might deploy a load balancer to manage inbound connections.
+When roles are reversed,
+having the origin server be responsible for connection establishment
+can mean that the gateway cannot assume that it is able
 to make new connections as demand increases.
 
 This can mean that origin servers have a greater control
@@ -492,15 +531,17 @@ The use of reversed HTTP/1.1 presents particular difficulty
 for connection management,
 which is borne by the origin server.
 The lack of any concurrency features in that protocol
-means that origin servers that use reversed HTTP/1.1
+means that origin servers that use 🥔 for HTTP/1.1
 will need to manage a pool of connections
 if the gateway needs to handle requests
 with any amount of concurrency or volume.
+Consequently, a choice to use it is inadvisable
+except for very specific conditions.
 
 
 # Security Considerations
 
-Using reversed HTTP changes the denial of service profile
+Using 🥔 changes the denial of service profile
 for origin servers that rely on it.
 Such servers are able to use different tools
 to manage their reachability.
