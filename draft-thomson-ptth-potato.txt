@@ -4,17 +4,17 @@
 
 Protocol for Transposed Transactions over HTTP                M. Thomson
 Internet-Draft                                                   Mozilla
-Intended status: Standards Track                        27 November 2025
-Expires: 31 May 2026
+Intended status: Standards Track                             14 May 2026
+Expires: 15 November 2026
 
 
-                            🥔 - Reverse HTTP
+                       🥔 (Potato) - Reverse HTTP
                     draft-thomson-ptth-potato-latest
 
 Abstract
 
-   This document defines 🥔, a suite of reversed versions of HTTP for
-   origin servers.
+   This document defines 🥔 (Potato), a suite of reversed versions of
+   HTTP for origin servers.
 
 About This Document
 
@@ -49,11 +49,11 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 31 May 2026.
+   This Internet-Draft will expire on 15 November 2026.
 
 Copyright Notice
 
-   Copyright (c) 2025 IETF Trust and the persons identified as the
+   Copyright (c) 2026 IETF Trust and the persons identified as the
    document authors.  All rights reserved.
 
    This document is subject to BCP 78 and the IETF Trust's Legal
@@ -72,9 +72,9 @@ Table of Contents
    2.  Conventions and Definitions
    3.  Overview and Scope
    4.  Reversed HTTP
-     4.1.  Reversed HTTP/1.1
-     4.2.  Reversed HTTP/2
-     4.3.  Reversed HTTP/3
+     4.1.  🥔 for HTTP/1.1
+     4.2.  🥔 for HTTP/2
+     4.3.  🥔 for HTTP/3
    5.  Authenticating and Authorizing Origin Servers
      5.1.  TLS Client Certificates
      5.2.  HTTP Request
@@ -95,9 +95,10 @@ Table of Contents
    Operating an HTTP server that is accessable on the public internet
    creates an unmanageable risk of denial of service for many
    organizations, especially smaller operators.  Content delivery
-   networks (CDNs) are able to provide a measure of protection, but
-   their services typically operate as gateways, which require that the
-   origin server be reachable.
+   networks (CDNs) are able to provide a measure of protection.  This
+   helps, but only to a degree.  A CDN typically operates as a gateway,
+   which imposes requirements on origin servers for reachability,
+   security, and scalability that can be operationally challenging.
 
    An alternative deployment model has emerged as a means of addressing
    this concern, where, rather than have the gateway initiate a
@@ -118,8 +119,10 @@ Table of Contents
        |<-- response --+                |              |  | connection
        |               |                |              |
 
-   This arrangement greatly simplifies the configuration of firewalls,
-   which are better able to authorize outward-bound connections.
+   This arrangement has several advantages.  It greatly simplifies the
+   configuration of firewalls, which are better able to authorize
+   outward-bound connections.  It also changes the way that the origin
+   scales up in the case where multiple server instances are needed.
 
    This document defines alternative, "reversed", versions of HTTP
    [HTTP] protocols.  These protocols are all nearly identical to their
@@ -200,16 +203,21 @@ Table of Contents
    This document does not define a protocol that allows both endpoints
    to make requests over the same connection.  Separate connections can
    be used if requests need to be exchanged in both directions.
+   Alternatively, tunnels (e.g., CONNECT or variants [RFC9298]) within a
+   regular HTTP connection and a 🥔 variant can use that tunnel.
+   Finally, a 🥔 connection could also be established and a tunnel with 🥔
+   variant inside, but the role inversions and the authentication and
+   authorization that are involved could be more confusing than helpful.
 
 4.  Reversed HTTP
 
-   This section defines the basic operation of reversed HTTP for each
-   major HTTP version.
+   This section defines the basic operation of 🥔 for each major HTTP
+   version.
 
-   All versions of reversed HTTP require special handling for questions
-   of server authority.  Authorizing the origin server is discussed in
-   Section 5.  Similarly the means by which a gateway authorizes an
-   origin server are discussed in Section 5.
+   All versions of 🥔 require special handling for questions of server
+   authority.  Authorizing the origin server is discussed in Section 5.
+   Similarly the means by which a gateway authorizes an origin server
+   are discussed in Section 5.
 
    Most HTTP features, including extensions to specific HTTP versions,
    are unaffected by the reversal of the protocol.
@@ -219,20 +227,20 @@ Table of Contents
    relates to the HTTP client or server role.  Such features cannot be
    used without additional profiling.
 
-   The features that cannot be used with reversed HTTP include: the
-   Client-Cert HTTP field [RFC9440].
+   The features that cannot be used with 🥔 include: the Client-Cert HTTP
+   field [RFC9440].
 
    A small adjustment to the operation of the HTTP/3 Datagram extension
    [HTTP-DGRAM] is described in Section 4.3.
 
-4.1.  Reversed HTTP/1.1
+4.1.  🥔 for HTTP/1.1
 
    A reversed version of HTTP/1.1 [HTTP/1.1] is identified by the ALPN
-   label "rh1".
+   label "ph1".
 
-   To negotiate the use of reversed HTTP/1.1 protocol, an origin server
-   advertises the "rh1" token in its TLS handshake using ALPN [ALPN] and
-   a gateway selects that token.
+   To negotiate the use of 🥔 for HTTP/1.1, an origin server advertises
+   the "ph1" token in its TLS handshake using ALPN [ALPN] and a gateway
+   selects that token.
 
    Once a TLS connection is established, the origin server (as a TLS
    client) becomes the HTTP server and the gateway (as TLS server)
@@ -242,14 +250,14 @@ Table of Contents
    HTTP/1.1 depends only on an undifferentiated stream of bytes.  No
    special considerations apply to this version.
 
-4.2.  Reversed HTTP/2
+4.2.  🥔 for HTTP/2
 
    A reversed version of HTTP/2 [HTTP/2] is identified by the ALPN label
-   "rh2".
+   "ph2".
 
-   To negotiate the use of reversed HTTP/2 protocol, an origin server
-   advertises the "rh2" token in its TLS handshake using ALPN [ALPN] and
-   a gateway selects that token.
+   To negotiate the use of 🥔 for HTTP/2, an origin server advertises the
+   "ph2" token in its TLS handshake using ALPN [ALPN] and a gateway
+   selects that token.
 
    Once a TLS connection is established, the origin server (as a TLS
    client) becomes the HTTP/2 server and the gateway (as TLS server)
@@ -260,17 +268,18 @@ Table of Contents
    changes are necessary to the base protocol.
 
    In operation, the gateway (as HTTP/2 client) initiates requests on
-   odd-numbered streams.  Any push promises from the origin server (as
-   HTTP server) are sent on even-numbered streams.
+   odd-numbered streams, just like a regular HTTP/2 connection.  Any
+   push promises from the origin server (as HTTP server) are sent on
+   even-numbered streams.
 
-4.3.  Reversed HTTP/3
+4.3.  🥔 for HTTP/3
 
    A reversed version of HTTP/3 [HTTP/3] is identified by the ALPN label
-   "rh3".
+   "ph3".
 
-   To negotiate the use of reversed HTTP/3 protocol, an origin server
-   advertises the "rh3" token in its QUIC handshake using ALPN [ALPN]
-   and a gateway selects that token.
+   To negotiate the use of 🥔 for HTTP/3, an origin server advertises the
+   "ph3" token in its QUIC handshake using ALPN [ALPN] and a gateway
+   selects that token.
 
    Once a QUIC connection is established, the origin server (as a QUIC
    client) becomes the HTTP/3 server and the gateway (as QUIC server)
@@ -292,6 +301,9 @@ Table of Contents
    type (0b01) is added.  This adjustment only requires an understanding
    of the type of QUIC stream that the HTTP client uses to make
    requests, which works for regular HTTP/3 as well.
+
+      |  Note that the same Quarter Stream ID adjustment is safe to use
+      |  in a regular HTTP/3 implementation of HTTP datagrams.
 
    Any extension that makes similar assumptions about the structure of
    stream identifiers can be adjusted in a similar manner.
@@ -325,41 +337,56 @@ Table of Contents
    *  Self-signed certificates could be mapped to specific
       authorizations.
 
-   This option might introduce some challenges in deployment.  Because
-   the TLS connection that is established to the gateway uses the same
-   endpoint that other clients, the TLS server software needs to make
-   its protocol selection before deciding to request a client
-   certificate.
+   This option might introduce some challenges in implementation or
+   deployment.  Because the TLS connection that is established to the
+   gateway uses the same endpoint as other clients, the TLS server
+   software would need to make its protocol selection before deciding to
+   request a client certificate.
 
 5.2.  HTTP Request
 
-   Once a reversed HTTP connection is established, the gateway could
-   make a request to a pre-arranged resource.
+   Once a 🥔 connection is established, the gateway could make a request
+   to a pre-arranged resource.
 
-   This request could be used to retrieve a bearer token that authorizes
-   the origin server.  A more complex request might involve the origin
-   server producing a signed object that covers a challenge produced by
-   the gateway.  Responding to a challenge is a defense against the
-   possibility of an attack that captures and replays a bearer token.
+   This request could be used to retrieve a shared secret that
+   authorizes the origin server.
+
+   GET /some/prearranged/resource HTTP/1.1
+   Host: origin.example
+
+   HTTP/1.1 200 OK
+
+   {some prearranged secret}
+
+   However, this is trivially vulnerable to impersonation attack if an
+   adversary is able to capture the secret.
+
+   A marginally more complex and more secure exchange might involve the
+   origin server producing a signed object that covers a challenge
+   produced by the gateway.
 
    TODO: Should this document define a protocol?
 
 5.3.  Authorization for Limited Path Scope
 
    A gateway does not need to authorize an origin server to serve all
-   requests for an origin.  Nor does a gateway need to limit its
-   authorization to a single origin.
+   requests for an origin.  A gateway might direct only a subset of URLs
+   to a specific origin.
+
+   Nor does a gateway need to limit its authorization to a single
+   origin.  A gateway could send requests for multiple origins, varying
+   host or port as configured.
 
    The choice of which requests are forwarded to an origin server is a
    matter for gateway policy.  That policy might be guided by the choice
    of credential presented by the origin server.
 
-   For instance, if a HTTP request is used to authorize the origin
-   server, the response might include information that guides the
-   gateway in determining which requests are forwarded over the
-   connection.  This could be as simple as having the origin server list
-   path prefixes that it can serve or it could be bound to the
-   credentials that are offered.
+   If a HTTP request is used to authorize the origin server, the
+   response might include information that guides the gateway in
+   determining which requests are forwarded over the connection.  This
+   could be as simple as having the origin server list path prefixes
+   that it can serve or it could be bound to the credentials that are
+   offered.
 
    This might be used to enable different deployment architectures where
    the one logical origin server is distributed across multiple
@@ -375,10 +402,9 @@ Table of Contents
    An origin server MUST authenticate a gateway unless an alternative
    means of authentication is privately arranged.
 
-   In all reversed HTTP versions, when the the origin server establishes
-   a TLS connection to the gateway, it confirms the identity of the
-   gateway according to the rules of the respective, non-reversed, HTTP
-   version.
+   In all 🥔 variants, when the the origin server establishes a TLS
+   connection to the gateway, it confirms the identity of the gateway
+   according to the rules of the respective, non-🥔, HTTP version.
 
    The rules in Section 4.3 of [HTTP] regarding how clients determine
    whether a server can answer a request are applied in reverse.  That
@@ -387,7 +413,7 @@ Table of Contents
    that gateway.
 
    Because the server and client roles are reversed, some methods for
-   expanding the scope that a server can claim authority are
+   expanding the scope that a server can claim authority for are
    invalidated.  Mechanisms like the ORIGIN frame [ORIGIN] remain valid
    as a means of limiting scope.
 
@@ -434,10 +460,11 @@ Table of Contents
 8.  Scalability, Availability, and Connection Management
 
    A gateway that is configured to make connections to an origin server
-   is able to make connections as needed.  Having the origin server be
-   responsible for connection establishment can mean that the gateway
-   cannot rely on being able to make new connections as demand
-   increases.
+   is able to make connections as needed.  The origin server might
+   deploy a load balancer to manage inbound connections.  When roles are
+   reversed, having the origin server be responsible for connection
+   establishment can mean that the gateway cannot assume that it is able
+   to make new connections as demand increases.
 
    This can mean that origin servers have a greater control over their
    availability and service scaling.  Where an origin server that might
@@ -464,15 +491,16 @@ Table of Contents
    The use of reversed HTTP/1.1 presents particular difficulty for
    connection management, which is borne by the origin server.  The lack
    of any concurrency features in that protocol means that origin
-   servers that use reversed HTTP/1.1 will need to manage a pool of
+   servers that use 🥔 for HTTP/1.1 will need to manage a pool of
    connections if the gateway needs to handle requests with any amount
-   of concurrency or volume.
+   of concurrency or volume.  Consequently, a choice to use it is
+   inadvisable except for very specific conditions.
 
 9.  Security Considerations
 
-   Using reversed HTTP changes the denial of service profile for origin
-   servers that rely on it.  Such servers are able to use different
-   tools to manage their reachability.
+   Using 🥔 changes the denial of service profile for origin servers that
+   rely on it.  Such servers are able to use different tools to manage
+   their reachability.
 
    A gateway becomes a more central part of managing load, but the
    gateway no longer has direct control over connection establishment.
@@ -550,6 +578,10 @@ Table of Contents
    [ORIGIN]   Nottingham, M. and E. Nygren, "The ORIGIN HTTP/2 Frame",
               RFC 8336, DOI 10.17487/RFC8336, March 2018,
               <https://www.rfc-editor.org/rfc/rfc8336>.
+
+   [RFC9298]  Schinazi, D., "Proxying UDP in HTTP", RFC 9298,
+              DOI 10.17487/RFC9298, August 2022,
+              <https://www.rfc-editor.org/rfc/rfc9298>.
 
    [RFC9440]  Campbell, B. and M. Bishop, "Client-Cert HTTP Header
               Field", RFC 9440, DOI 10.17487/RFC9440, July 2023,

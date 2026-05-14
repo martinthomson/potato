@@ -4,29 +4,30 @@
 <meta charset="utf-8">
 <meta content="Common,Latin" name="scripts">
 <meta content="initial-scale=1.0" name="viewport">
-<title>🥔 - Reverse HTTP</title>
+<title>🥔 (Potato) - Reverse HTTP</title>
 <meta content="Martin Thomson" name="author">
 <meta content="
-       This document defines 🥔, a suite of reversed versions of HTTP for origin servers. 
+       This document defines 🥔 (Potato),
+a suite of reversed versions of HTTP for origin servers. 
     " name="description">
-<meta content="xml2rfc 3.31.0" name="generator">
+<meta content="xml2rfc 3.33.0" name="generator">
 <meta content="next generation" name="keyword">
 <meta content="unicorn" name="keyword">
 <meta content="sparkling distributed ledger" name="keyword">
 <meta content="draft-thomson-ptth-potato-latest" name="ietf.draft">
 <!-- Generator version information:
-  xml2rfc 3.31.0
-    Python 3.12.12
+  xml2rfc 3.33.0
+    Python 3.12.13
     ConfigArgParse 1.7
     google-i18n-address 3.1.1
-    intervaltree 3.1.0
+    intervaltree 3.2.1
     Jinja2 3.1.6
-    lxml 5.3.1
-    platformdirs 4.5.0
+    lxml 6.0.2
+    platformdirs 4.9.6
     pycountry 24.6.1
-    PyYAML 6.0.2
-    requests 2.32.5
-    wcwidth 0.2.14
+    PyYAML 6.0.3
+    requests 2.33.1
+    wcwidth 0.7.0
 -->
 <link href="draft-thomson-ptth-potato.xml" rel="alternate" type="application/rfc+xml">
 <link href="#copyright" rel="license">
@@ -167,7 +168,7 @@
   font-weight: 400;
   font-display: swap;
   src: local('Oxygen Mono'), local('OxygenMono-Regular'), url('https://martinthomson.github.io/rfc-css/fonts/oxygenmono-regular-latin-ext.woff2') format('woff2');
-  unicode-range: U+0100-024F, U+0259, U+1E00-1EFF, U+2020, U+20A0-20AB, U+20AD-20CF, U+2113, U+2C60-2C7F, U+A720-A7FF;
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
 }
 @font-face {
   font-family: 'Oxygen Mono';
@@ -175,7 +176,8 @@
   font-weight: 400;
   font-display: swap;
   src: local('Oxygen Mono'), local('OxygenMono-Regular'), url('https://martinthomson.github.io/rfc-css/fonts/oxygenmono-regular-latin.woff2') format('woff2');
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
 }
 
 @font-face {
@@ -567,6 +569,7 @@ aside, blockquote {
 }
 blockquote {
   margin: 1em 0;
+  border-left: 2px var(--pilcrow-strong) solid;
 }
 cite {
   display: block;
@@ -637,7 +640,7 @@ a.pilcrow {
   }
 }
 @media not print {
-  :hover > a.pilcrow {
+  :hover > a.pilcrow, a.pilcrow:focus {
     opacity: 1;
   }
   a.pilcrow[href]:hover {
@@ -1045,11 +1048,11 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <thead><tr>
 <td class="left">Internet-Draft</td>
 <td class="center">🥔</td>
-<td class="right">November 2025</td>
+<td class="right">May 2026</td>
 </tr></thead>
 <tfoot><tr>
 <td class="left">Thomson</td>
-<td class="center">Expires 31 May 2026</td>
+<td class="center">Expires 15 November 2026</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1062,12 +1065,12 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <dd class="internet-draft">draft-thomson-ptth-potato-latest</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2025-11-27" class="published">27 November 2025</time>
+<time datetime="2026-05-14" class="published">14 May 2026</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Standards Track</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2026-05-31">31 May 2026</time></dd>
+<dd class="expires"><time datetime="2026-11-15">15 November 2026</time></dd>
 <dt class="label-authors">Author:</dt>
 <dd class="authors">
 <div class="author">
@@ -1077,10 +1080,11 @@ svg :is([fill="white"], [fill^="#fff"]) {
 </dd>
 </dl>
 </div>
-<h1 id="title">🥔 - Reverse HTTP</h1>
+<h1 id="title">🥔 (Potato) - Reverse HTTP</h1>
 <section id="section-abstract">
       <h2 id="abstract"><a href="#abstract" class="selfRef">Abstract</a></h2>
-<p id="section-abstract-1">This document defines 🥔, a suite of reversed versions of HTTP for origin servers.<a href="#section-abstract-1" class="pilcrow">¶</a></p>
+<p id="section-abstract-1">This document defines 🥔 (Potato),
+a suite of reversed versions of HTTP for origin servers.<a href="#section-abstract-1" class="pilcrow">¶</a></p>
 </section>
 <section class="note rfcEditorRemove" id="section-note.1">
       <h2 id="name-about-this-document">
@@ -1117,7 +1121,7 @@ svg :is([fill="white"], [fill^="#fff"]) {
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 31 May 2026.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 15 November 2026.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1126,7 +1130,7 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <a href="#name-copyright-notice" class="section-name selfRef">Copyright Notice</a>
         </h2>
 <p id="section-boilerplate.2-1">
-            Copyright (c) 2025 IETF Trust and the persons identified as the
+            Copyright (c) 2026 IETF Trust and the persons identified as the
             document authors. All rights reserved.<a href="#section-boilerplate.2-1" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.2-2">
             This document is subject to BCP 78 and the IETF Trust's Legal
@@ -1164,13 +1168,13 @@ svg :is([fill="white"], [fill^="#fff"]) {
             <p id="section-toc.1-1.4.1"><a href="#section-4" class="auto internal xref">4</a>.  <a href="#name-reversed-http" class="internal xref">Reversed HTTP</a></p>
 <ul class="compact toc ulBare ulEmpty">
 <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.4.2.1">
-                <p id="section-toc.1-1.4.2.1.1"><a href="#section-4.1" class="auto internal xref">4.1</a>.  <a href="#name-reversed-http-11" class="internal xref">Reversed HTTP/1.1</a></p>
+                <p id="section-toc.1-1.4.2.1.1"><a href="#section-4.1" class="auto internal xref">4.1</a>.  <a href="#name-for-http-11" class="internal xref">🥔 for HTTP/1.1</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.4.2.2">
-                <p id="section-toc.1-1.4.2.2.1"><a href="#section-4.2" class="auto internal xref">4.2</a>.  <a href="#name-reversed-http-2" class="internal xref">Reversed HTTP/2</a></p>
+                <p id="section-toc.1-1.4.2.2.1"><a href="#section-4.2" class="auto internal xref">4.2</a>.  <a href="#name-for-http-2" class="internal xref">🥔 for HTTP/2</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.4.2.3">
-                <p id="section-toc.1-1.4.2.3.1"><a href="#section-4.3" class="auto internal xref">4.3</a>.  <a href="#name-reversed-http-3" class="internal xref">Reversed HTTP/3</a></p>
+                <p id="section-toc.1-1.4.2.3.1"><a href="#section-4.3" class="auto internal xref">4.3</a>.  <a href="#name-for-http-3" class="internal xref">🥔 for HTTP/3</a></p>
 </li>
             </ul>
 </li>
@@ -1233,9 +1237,12 @@ svg :is([fill="white"], [fill^="#fff"]) {
 creates an unmanageable risk of denial of service
 for many organizations,
 especially smaller operators.
-Content delivery networks (CDNs) are able to provide a measure of protection,
-but their services typically operate as gateways,
-which require that the origin server be reachable.<a href="#section-1-1" class="pilcrow">¶</a></p>
+Content delivery networks (CDNs) are able to provide a measure of protection.
+This helps, but only to a degree.
+A CDN typically operates as a gateway,
+which imposes requirements on origin servers
+for reachability, security, and scalability
+that can be operationally challenging.<a href="#section-1-1" class="pilcrow">¶</a></p>
 <p id="section-1-2">An alternative deployment model has emerged as a means of addressing this concern,
 where, rather than have the gateway initiate a connection to the origin,
 the origin connects to the gateway.<a href="#section-1-2" class="pilcrow">¶</a></p>
@@ -1312,8 +1319,11 @@ the origin connects to the gateway.<a href="#section-1-2" class="pilcrow">¶</a>
           </svg><a href="#section-1-3.1" class="pilcrow">¶</a>
 </div>
 </div>
-<p id="section-1-4">This arrangement greatly simplifies the configuration of firewalls,
-which are better able to authorize outward-bound connections.<a href="#section-1-4" class="pilcrow">¶</a></p>
+<p id="section-1-4">This arrangement has several advantages.
+It greatly simplifies the configuration of firewalls,
+which are better able to authorize outward-bound connections.
+It also changes the way that the origin scales up
+in the case where multiple server instances are needed.<a href="#section-1-4" class="pilcrow">¶</a></p>
 <p id="section-1-5">This document defines alternative, "reversed", versions of HTTP <span>[<a href="#HTTP" class="cite xref">HTTP</a>]</span> protocols.
 These protocols are all nearly identical to their "forward" counterparts,
 with the exception that the client and server roles are inverted
@@ -1401,7 +1411,15 @@ and essential to its secure and correct operation.<a href="#section-3-5" class="
 <p id="section-3-6">This document does not define a protocol
 that allows both endpoints to make requests over the same connection.
 Separate connections can be used
-if requests need to be exchanged in both directions.<a href="#section-3-6" class="pilcrow">¶</a></p>
+if requests need to be exchanged in both directions.
+Alternatively, tunnels (e.g., CONNECT or variants <span>[<a href="#RFC9298" class="cite xref">RFC9298</a>]</span>)
+within a regular HTTP connection
+and a 🥔 variant can use that tunnel.
+Finally, a 🥔 connection could also be established
+and a tunnel with 🥔 variant inside,
+but the role inversions
+and the authentication and authorization that are involved
+could be more confusing than helpful.<a href="#section-3-6" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="reversed-http">
@@ -1409,9 +1427,9 @@ if requests need to be exchanged in both directions.<a href="#section-3-6" class
       <h2 id="name-reversed-http">
 <a href="#section-4" class="section-number selfRef">4. </a><a href="#name-reversed-http" class="section-name selfRef">Reversed HTTP</a>
       </h2>
-<p id="section-4-1">This section defines the basic operation of reversed HTTP
+<p id="section-4-1">This section defines the basic operation of 🥔
 for each major HTTP version.<a href="#section-4-1" class="pilcrow">¶</a></p>
-<p id="section-4-2">All versions of reversed HTTP require special handling
+<p id="section-4-2">All versions of 🥔 require special handling
 for questions of server authority.
 Authorizing the origin server is discussed in <a href="#auth-origin" class="auto internal xref">Section 5</a>.
 Similarly the means by which a gateway authorizes
@@ -1424,7 +1442,7 @@ that also depend on assumptions
 about how the the TLS or transport-layer role
 relates to the HTTP client or server role.
 Such features cannot be used without additional profiling.<a href="#section-4-4" class="pilcrow">¶</a></p>
-<p id="section-4-5">The features that cannot be used with reversed HTTP
+<p id="section-4-5">The features that cannot be used with 🥔
 include:
 the Client-Cert HTTP field <span>[<a href="#RFC9440" class="cite xref">RFC9440</a>]</span>.<a href="#section-4-5" class="pilcrow">¶</a></p>
 <p id="section-4-6">A small adjustment to the operation of
@@ -1432,13 +1450,13 @@ the HTTP/3 Datagram extension <span>[<a href="#HTTP-DGRAM" class="cite xref">HTT
 is described in <a href="#rh3" class="auto internal xref">Section 4.3</a>.<a href="#section-4-6" class="pilcrow">¶</a></p>
 <div id="rh1">
 <section id="section-4.1">
-        <h3 id="name-reversed-http-11">
-<a href="#section-4.1" class="section-number selfRef">4.1. </a><a href="#name-reversed-http-11" class="section-name selfRef">Reversed HTTP/1.1</a>
+        <h3 id="name-for-http-11">
+<a href="#section-4.1" class="section-number selfRef">4.1. </a><a href="#name-for-http-11" class="section-name selfRef">🥔 for HTTP/1.1</a>
         </h3>
 <p id="section-4.1-1">A reversed version of HTTP/1.1 <span>[<a href="#RFC9112" class="cite xref">HTTP/1.1</a>]</span>
-is identified by the ALPN label "rh1".<a href="#section-4.1-1" class="pilcrow">¶</a></p>
-<p id="section-4.1-2">To negotiate the use of reversed HTTP/1.1 protocol,
-an origin server advertises the "rh1" token
+is identified by the ALPN label "ph1".<a href="#section-4.1-1" class="pilcrow">¶</a></p>
+<p id="section-4.1-2">To negotiate the use of 🥔 for HTTP/1.1,
+an origin server advertises the "ph1" token
 in its TLS handshake using ALPN <span>[<a href="#ALPN" class="cite xref">ALPN</a>]</span>
 and a gateway selects that token.<a href="#section-4.1-2" class="pilcrow">¶</a></p>
 <p id="section-4.1-3">Once a TLS connection is established,
@@ -1452,13 +1470,13 @@ No special considerations apply to this version.<a href="#section-4.1-4" class="
 </div>
 <div id="rh2">
 <section id="section-4.2">
-        <h3 id="name-reversed-http-2">
-<a href="#section-4.2" class="section-number selfRef">4.2. </a><a href="#name-reversed-http-2" class="section-name selfRef">Reversed HTTP/2</a>
+        <h3 id="name-for-http-2">
+<a href="#section-4.2" class="section-number selfRef">4.2. </a><a href="#name-for-http-2" class="section-name selfRef">🥔 for HTTP/2</a>
         </h3>
 <p id="section-4.2-1">A reversed version of HTTP/2 <span>[<a href="#RFC9113" class="cite xref">HTTP/2</a>]</span>
-is identified by the ALPN label "rh2".<a href="#section-4.2-1" class="pilcrow">¶</a></p>
-<p id="section-4.2-2">To negotiate the use of reversed HTTP/2 protocol,
-an origin server advertises the "rh2" token
+is identified by the ALPN label "ph2".<a href="#section-4.2-1" class="pilcrow">¶</a></p>
+<p id="section-4.2-2">To negotiate the use of 🥔 for HTTP/2,
+an origin server advertises the "ph2" token
 in its TLS handshake using ALPN <span>[<a href="#ALPN" class="cite xref">ALPN</a>]</span>
 and a gateway selects that token.<a href="#section-4.2-2" class="pilcrow">¶</a></p>
 <p id="section-4.2-3">Once a TLS connection is established,
@@ -1469,20 +1487,21 @@ and establishes an HTTP connection.<a href="#section-4.2-3" class="pilcrow">¶</
 <p id="section-4.2-4">HTTP/2 depends only on an undifferentiated stream of bytes.
 No changes are necessary to the base protocol.<a href="#section-4.2-4" class="pilcrow">¶</a></p>
 <p id="section-4.2-5">In operation, the gateway (as HTTP/2 client) initiates requests
-on odd-numbered streams.
+on odd-numbered streams,
+just like a regular HTTP/2 connection.
 Any push promises from the origin server (as HTTP server)
 are sent on even-numbered streams.<a href="#section-4.2-5" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="rh3">
 <section id="section-4.3">
-        <h3 id="name-reversed-http-3">
-<a href="#section-4.3" class="section-number selfRef">4.3. </a><a href="#name-reversed-http-3" class="section-name selfRef">Reversed HTTP/3</a>
+        <h3 id="name-for-http-3">
+<a href="#section-4.3" class="section-number selfRef">4.3. </a><a href="#name-for-http-3" class="section-name selfRef">🥔 for HTTP/3</a>
         </h3>
 <p id="section-4.3-1">A reversed version of HTTP/3 <span>[<a href="#RFC9114" class="cite xref">HTTP/3</a>]</span>
-is identified by the ALPN label "rh3".<a href="#section-4.3-1" class="pilcrow">¶</a></p>
-<p id="section-4.3-2">To negotiate the use of reversed HTTP/3 protocol,
-an origin server advertises the "rh3" token
+is identified by the ALPN label "ph3".<a href="#section-4.3-1" class="pilcrow">¶</a></p>
+<p id="section-4.3-2">To negotiate the use of 🥔 for HTTP/3,
+an origin server advertises the "ph3" token
 in its QUIC handshake using ALPN <span>[<a href="#ALPN" class="cite xref">ALPN</a>]</span>
 and a gateway selects that token.<a href="#section-4.3-2" class="pilcrow">¶</a></p>
 <p id="section-4.3-3">Once a QUIC connection is established,
@@ -1509,9 +1528,13 @@ then the stream type (0b01) is added.
 This adjustment only requires an understanding of the type of QUIC stream
 that the HTTP client uses to make requests,
 which works for regular HTTP/3 as well.<a href="#section-4.3-5" class="pilcrow">¶</a></p>
-<p id="section-4.3-6">Any extension that makes similar assumptions
+<aside id="section-4.3-6">
+          <p id="section-4.3-6.1">Note that the same Quarter Stream ID adjustment is safe to use
+in a regular HTTP/3 implementation of HTTP datagrams.<a href="#section-4.3-6.1" class="pilcrow">¶</a></p>
+</aside>
+<p id="section-4.3-7">Any extension that makes similar assumptions
 about the structure of stream identifiers
-can be adjusted in a similar manner.<a href="#section-4.3-6" class="pilcrow">¶</a></p>
+can be adjusted in a similar manner.<a href="#section-4.3-7" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
@@ -1554,10 +1577,10 @@ This includes a PKI managed by the gateway.<a href="#section-5.1-3.2.1" class="p
 to specific authorizations.<a href="#section-5.1-3.3.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
-<p id="section-5.1-4">This option might introduce some challenges in deployment.
+<p id="section-5.1-4">This option might introduce some challenges in implementation or deployment.
 Because the TLS connection that is established to the gateway
-uses the same endpoint that other clients,
-the TLS server software needs to make its protocol selection
+uses the same endpoint as other clients,
+the TLS server software would need to make its protocol selection
 before deciding to request a client certificate.<a href="#section-5.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
@@ -1566,17 +1589,31 @@ before deciding to request a client certificate.<a href="#section-5.1-4" class="
         <h3 id="name-http-request">
 <a href="#section-5.2" class="section-number selfRef">5.2. </a><a href="#name-http-request" class="section-name selfRef">HTTP Request</a>
         </h3>
-<p id="section-5.2-1">Once a reversed HTTP connection is established,
+<p id="section-5.2-1">Once a 🥔 connection is established,
 the gateway could make a request to a pre-arranged resource.<a href="#section-5.2-1" class="pilcrow">¶</a></p>
-<p id="section-5.2-2">This request could be used to retrieve a bearer token
-that authorizes the origin server.
-A more complex request
+<p id="section-5.2-2">This request could be used to retrieve a shared secret
+that authorizes the origin server.<a href="#section-5.2-2" class="pilcrow">¶</a></p>
+<div class="lang-http sourcecode" id="section-5.2-3">
+<pre>
+GET /some/prearranged/resource HTTP/1.1
+Host: origin.example
+
+</pre><a href="#section-5.2-3" class="pilcrow">¶</a>
+</div>
+<div class="lang-http sourcecode" id="section-5.2-4">
+<pre>
+HTTP/1.1 200 OK
+
+{some prearranged secret}
+</pre><a href="#section-5.2-4" class="pilcrow">¶</a>
+</div>
+<p id="section-5.2-5">However, this is trivially vulnerable
+to impersonation attack
+if an adversary is able to capture the secret.<a href="#section-5.2-5" class="pilcrow">¶</a></p>
+<p id="section-5.2-6">A marginally more complex and more secure exchange
 might involve the origin server producing a signed object
-that covers a challenge produced by the gateway.
-Responding to a challenge is a defense
-against the possibility of an attack
-that captures and replays a bearer token.<a href="#section-5.2-2" class="pilcrow">¶</a></p>
-<p id="section-5.2-3">TODO: Should this document define a protocol?<a href="#section-5.2-3" class="pilcrow">¶</a></p>
+that covers a challenge produced by the gateway.<a href="#section-5.2-6" class="pilcrow">¶</a></p>
+<p id="section-5.2-7">TODO: Should this document define a protocol?<a href="#section-5.2-7" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="authorization-for-limited-path-scope">
@@ -1586,30 +1623,33 @@ that captures and replays a bearer token.<a href="#section-5.2-2" class="pilcrow
         </h3>
 <p id="section-5.3-1">A gateway does not need to authorize an origin server
 to serve all requests for an origin.
-Nor does a gateway need to limit its authorization
-to a single origin.<a href="#section-5.3-1" class="pilcrow">¶</a></p>
-<p id="section-5.3-2">The choice of which requests are forwarded to an origin server
+A gateway might direct only a subset of URLs to a specific origin.<a href="#section-5.3-1" class="pilcrow">¶</a></p>
+<p id="section-5.3-2">Nor does a gateway need to limit its authorization
+to a single origin.
+A gateway could send requests for multiple origins,
+varying host or port as configured.<a href="#section-5.3-2" class="pilcrow">¶</a></p>
+<p id="section-5.3-3">The choice of which requests are forwarded to an origin server
 is a matter for gateway policy.
 That policy might be guided by the choice of credential
-presented by the origin server.<a href="#section-5.3-2" class="pilcrow">¶</a></p>
-<p id="section-5.3-3">For instance, if a HTTP request is used
+presented by the origin server.<a href="#section-5.3-3" class="pilcrow">¶</a></p>
+<p id="section-5.3-4">If a HTTP request is used
 to authorize the origin server,
 the response might include information
 that guides the gateway in determining
 which requests are forwarded over the connection.
 This could be as simple as
 having the origin server list path prefixes that it can serve
-or it could be bound to the credentials that are offered.<a href="#section-5.3-3" class="pilcrow">¶</a></p>
-<p id="section-5.3-4">This might be used to enable different deployment architectures
+or it could be bound to the credentials that are offered.<a href="#section-5.3-4" class="pilcrow">¶</a></p>
+<p id="section-5.3-5">This might be used to enable different deployment architectures
 where the one logical origin server is distributed
 across multiple instances,
-with different paths being served by different hosts.<a href="#section-5.3-4" class="pilcrow">¶</a></p>
-<p id="section-5.3-5">This approach is also compatible with a gateway
+with different paths being served by different hosts.<a href="#section-5.3-5" class="pilcrow">¶</a></p>
+<p id="section-5.3-6">This approach is also compatible with a gateway
 that makes regular HTTP connections to some origin server nodes.
 A gateway might forward requests
 for the one origin
 to origin servers that use both regular and reversed HTTP
-based on whatever policy it chooses.<a href="#section-5.3-5" class="pilcrow">¶</a></p>
+based on whatever policy it chooses.<a href="#section-5.3-6" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
@@ -1622,11 +1662,11 @@ based on whatever policy it chooses.<a href="#section-5.3-5" class="pilcrow">¶<
 <p id="section-6-1">An origin server <span class="bcp14">MUST</span> authenticate a gateway
 unless an alternative means of authentication
 is privately arranged.<a href="#section-6-1" class="pilcrow">¶</a></p>
-<p id="section-6-2">In all reversed HTTP versions,
+<p id="section-6-2">In all 🥔 variants,
 when the the origin server establishes a TLS connection
 to the gateway,
 it confirms the identity of the gateway
-according to the rules of the respective, non-reversed, HTTP version.<a href="#section-6-2" class="pilcrow">¶</a></p>
+according to the rules of the respective, non-🥔, HTTP version.<a href="#section-6-2" class="pilcrow">¶</a></p>
 <p id="section-6-3">The rules in <span><a href="https://rfc-editor.org/rfc/rfc9110#section-4.3" class="relref">Section 4.3</a> of [<a href="#HTTP" class="cite xref">HTTP</a>]</span>
 regarding how clients determine whether a server can answer a request
 are applied in reverse.
@@ -1634,7 +1674,7 @@ That is, an origin server that cannot successfully determine
 that a gateway is authoritative for resources
 <span class="bcp14">MUST NOT</span> answer requests from that gateway.<a href="#section-6-3" class="pilcrow">¶</a></p>
 <p id="section-6-4">Because the server and client roles are reversed,
-some methods for expanding the scope that a server can claim authority
+some methods for expanding the scope that a server can claim authority for
 are invalidated.
 Mechanisms like the ORIGIN frame <span>[<a href="#ORIGIN" class="cite xref">ORIGIN</a>]</span> remain valid
 as a means of limiting scope.<a href="#section-6-4" class="pilcrow">¶</a></p>
@@ -1687,8 +1727,10 @@ such as the option described in <a href="#auth-http" class="auto internal xref">
       </h2>
 <p id="section-8-1">A gateway that is configured to make connections to an origin server
 is able to make connections as needed.
-Having the origin server be responsible for connection establishment
-can mean that the gateway cannot rely on being able
+The origin server might deploy a load balancer to manage inbound connections.
+When roles are reversed,
+having the origin server be responsible for connection establishment
+can mean that the gateway cannot assume that it is able
 to make new connections as demand increases.<a href="#section-8-1" class="pilcrow">¶</a></p>
 <p id="section-8-2">This can mean that origin servers have a greater control
 over their availability and service scaling.
@@ -1718,10 +1760,12 @@ is a matter for future work.<a href="#section-8-5" class="pilcrow">¶</a></p>
 for connection management,
 which is borne by the origin server.
 The lack of any concurrency features in that protocol
-means that origin servers that use reversed HTTP/1.1
+means that origin servers that use 🥔 for HTTP/1.1
 will need to manage a pool of connections
 if the gateway needs to handle requests
-with any amount of concurrency or volume.<a href="#section-8-6" class="pilcrow">¶</a></p>
+with any amount of concurrency or volume.
+Consequently, a choice to use it is inadvisable
+except for very specific conditions.<a href="#section-8-6" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="security-considerations">
@@ -1729,7 +1773,7 @@ with any amount of concurrency or volume.<a href="#section-8-6" class="pilcrow">
       <h2 id="name-security-considerations">
 <a href="#section-9" class="section-number selfRef">9. </a><a href="#name-security-considerations" class="section-name selfRef">Security Considerations</a>
       </h2>
-<p id="section-9-1">Using reversed HTTP changes the denial of service profile
+<p id="section-9-1">Using 🥔 changes the denial of service profile
 for origin servers that rely on it.
 Such servers are able to use different tools
 to manage their reachability.<a href="#section-9-1" class="pilcrow">¶</a></p>
@@ -1817,6 +1861,10 @@ and the specific HTTP version in use apply in full.<a href="#section-9-3" class=
 <dt id="ORIGIN">[ORIGIN]</dt>
         <dd>
 <span class="refAuthor">Nottingham, M.</span> and <span class="refAuthor">E. Nygren</span>, <span class="refTitle">"The ORIGIN HTTP/2 Frame"</span>, <span class="seriesInfo">RFC 8336</span>, <span class="seriesInfo">DOI 10.17487/RFC8336</span>, <time datetime="2018-03" class="refDate">March 2018</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc8336">https://www.rfc-editor.org/rfc/rfc8336</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC9298">[RFC9298]</dt>
+        <dd>
+<span class="refAuthor">Schinazi, D.</span>, <span class="refTitle">"Proxying UDP in HTTP"</span>, <span class="seriesInfo">RFC 9298</span>, <span class="seriesInfo">DOI 10.17487/RFC9298</span>, <time datetime="2022-08" class="refDate">August 2022</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc9298">https://www.rfc-editor.org/rfc/rfc9298</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="RFC9440">[RFC9440]</dt>
       <dd>
