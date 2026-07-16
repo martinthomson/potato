@@ -1,5 +1,5 @@
 ---
-title: "🥔 (Potato) - Reverse HTTP"
+title: "🥔 (Potato) - ‮H̶̡̢̦̼̟͔̟̎̿̀́̉̓̓̚Ţ͎̖̗̗̮̯̳͉̎͐́͆̊̕͜Ţ̴̝̱̗͈̥͇̓̐͒̒̆͑͜͠P̡̭̱̙͍͋̓̔͡͠ ì̸̟͕̜̺̱͔͖͖̱̀̀͛̽n͙͇̠͕̯̤̽͆̀́͆͆͑̊̃̐͢͜ R̢̠̼͇͔͒͛̓͐̊͗̚͡e͖̘̫̝̻̙͑͐̒͑̏̓͟͜͝v̗̞͔̰͍̓́̑̉̅̒̉̚͟e̢̧̹͉̮̮͖̩͙͈͑̿͛͒̎̃̄r̴̢̨̛̘̩͇͖̦̒̏͆̀̌̅͟s̸̛͉̥̬͎̟̜̽̇̉̅́̾͒͛ͅê͔̣̭̮͇̟̰̈̒̏̿͗̇̅͋͘͟ͅ"
 abbrev: "🥔"
 category: std
 
@@ -96,9 +96,9 @@ with the exception that the client and server roles are inverted
 after completing the transport and TLS layer establishment.
 
 This document defines reversed equivalents to
-HTTP/1.1 {{RFC9112}},
-HTTP/2 {{RFC9113}},
-and HTTP/3 {{RFC9114}}.
+HTTP/1.1 {{RFC9112}} in {{h1}},
+HTTP/2 {{RFC9113}} in {{h2}},
+and HTTP/3 {{RFC9114}} in {{h3}}.
 
 
 ## Comparative Notes
@@ -217,16 +217,17 @@ the Client-Cert HTTP field {{?RFC9440}}.
 
 A small adjustment to the operation of
 the HTTP/3 Datagram extension {{!HTTP-DGRAM=RFC9297}}
-is described in {{rh3}}.
+is described in {{h3}}.
 
 
-## 🥔 for HTTP/1.1 {#rh1}
+## 🥔 for HTTP/1.1 {#h1}
 
 A reversed version of HTTP/1.1 {{RFC9112}}
-is identified by the ALPN label "ph1".
+is identified by the ALPN label "Ɩɥ"
+or the byte sequence 0xc6, 0x96, 0xc9, 0xa5.
 
 To negotiate the use of 🥔 for HTTP/1.1,
-an origin server advertises the "ph1" token
+an origin server advertises the "Ɩɥ" token
 in its TLS handshake using ALPN {{ALPN}}
 and a gateway selects that token.
 
@@ -240,13 +241,14 @@ HTTP/1.1 depends only on an undifferentiated stream of bytes.
 No special considerations apply to this version.
 
 
-## 🥔 for HTTP/2 {#rh2}
+## 🥔 for HTTP/2 {#h2}
 
 A reversed version of HTTP/2 {{RFC9113}}
-is identified by the ALPN label "ph2".
+is identified by the ALPN label "Շɥ"
+or the byte sequence 0xd5, 0x87, 0xc9, 0xa5.
 
 To negotiate the use of 🥔 for HTTP/2,
-an origin server advertises the "ph2" token
+an origin server advertises the "Շɥ" token
 in its TLS handshake using ALPN {{ALPN}}
 and a gateway selects that token.
 
@@ -266,13 +268,14 @@ Any push promises from the origin server (as HTTP server)
 are sent on even-numbered streams.
 
 
-## 🥔 for HTTP/3 {#rh3}
+## 🥔 for HTTP/3 {#h3}
 
 A reversed version of HTTP/3 {{RFC9114}}
-is identified by the ALPN label "ph3".
+is identified by the ALPN label "Ɛɥ"
+or the byte sequence 0xc6, 0x90, 0xc9, 0xa5.
 
 To negotiate the use of 🥔 for HTTP/3,
-an origin server advertises the "ph3" token
+an origin server advertises the "Ɛɥ" token
 in its QUIC handshake using ALPN {{ALPN}}
 and a gateway selects that token.
 
