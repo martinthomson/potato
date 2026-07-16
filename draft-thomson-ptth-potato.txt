@@ -4,11 +4,14 @@
 
 Protocol for Transposed Transactions over HTTP                M. Thomson
 Internet-Draft                                                   Mozilla
-Intended status: Standards Track                             16 May 2026
-Expires: 17 November 2026
+Intended status: Standards Track                            16 July 2026
+Expires: 17 January 2027
 
 
-                       🥔 (Potato) - Reverse HTTP
+                              🥔 (Potato) -
+    ‮H̶̡̢̦̼̟͔̟̎̿̀́̉̓̓̚Ţ͎̖̗̗̮̯̳͉̎͐́͆̊̕͜Ţ̴̝̱̗͈̥͇̓̐͒̒̆͑͜͠P̡̭̱̙͍͋̓̔͡͠
+                  ì̸̟͕̜̺̱͔͖͖̱̀̀͛̽n͙͇̠͕̯̤̽͆̀́͆͆͑̊̃̐͢͜
+R̢̠̼͇͔͒͛̓͐̊͗̚͡e͖̘̫̝̻̙͑͐̒͑̏̓͟͜͝v̗̞͔̰͍̓́̑̉̅̒̉̚͟e̢̧̹͉̮̮͖̩͙͈͑̿͛͒̎̃̄r̴̢̨̛̘̩͇͖̦̒̏͆̀̌̅͟s̸̛͉̥̬͎̟̜̽̇̉̅́̾͒͛ͅê͔̣̭̮͇̟̰̈̒̏̿͗̇̅͋͘͟ͅ
                     draft-thomson-ptth-potato-latest
 
 Abstract
@@ -49,7 +52,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 17 November 2026.
+   This Internet-Draft will expire on 17 January 2027.
 
 Copyright Notice
 
@@ -130,8 +133,9 @@ Table of Contents
    roles are inverted after completing the transport and TLS layer
    establishment.
 
-   This document defines reversed equivalents to HTTP/1.1 [HTTP/1.1],
-   HTTP/2 [HTTP/2], and HTTP/3 [HTTP/3].
+   This document defines reversed equivalents to HTTP/1.1 [HTTP/1.1] in
+   Section 4.1, HTTP/2 [HTTP/2] in Section 4.2, and HTTP/3 [HTTP/3] in
+   Section 4.3.
 
 1.1.  Comparative Notes
 
@@ -236,10 +240,10 @@ Table of Contents
 4.1.  🥔 for HTTP/1.1
 
    A reversed version of HTTP/1.1 [HTTP/1.1] is identified by the ALPN
-   label "ph1".
+   label "Ɩɥ" or the byte sequence 0xc6, 0x96, 0xc9, 0xa5.
 
    To negotiate the use of 🥔 for HTTP/1.1, an origin server advertises
-   the "ph1" token in its TLS handshake using ALPN [ALPN] and a gateway
+   the "Ɩɥ" token in its TLS handshake using ALPN [ALPN] and a gateway
    selects that token.
 
    Once a TLS connection is established, the origin server (as a TLS
@@ -253,10 +257,10 @@ Table of Contents
 4.2.  🥔 for HTTP/2
 
    A reversed version of HTTP/2 [HTTP/2] is identified by the ALPN label
-   "ph2".
+   "Շɥ" or the byte sequence 0xd5, 0x87, 0xc9, 0xa5.
 
    To negotiate the use of 🥔 for HTTP/2, an origin server advertises the
-   "ph2" token in its TLS handshake using ALPN [ALPN] and a gateway
+   "Շɥ" token in its TLS handshake using ALPN [ALPN] and a gateway
    selects that token.
 
    Once a TLS connection is established, the origin server (as a TLS
@@ -275,10 +279,10 @@ Table of Contents
 4.3.  🥔 for HTTP/3
 
    A reversed version of HTTP/3 [HTTP/3] is identified by the ALPN label
-   "ph3".
+   "Ɛɥ" or the byte sequence 0xc6, 0x90, 0xc9, 0xa5.
 
    To negotiate the use of 🥔 for HTTP/3, an origin server advertises the
-   "ph3" token in its QUIC handshake using ALPN [ALPN] and a gateway
+   "Ɛɥ" token in its QUIC handshake using ALPN [ALPN] and a gateway
    selects that token.
 
    Once a QUIC connection is established, the origin server (as a QUIC
