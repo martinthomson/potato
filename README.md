@@ -1,8 +1,8 @@
 <!-- regenerate: on (set to off if you edit this file) -->
 
-# Potato - Reverse HTTP
+# 🥔 (Potato) - ‮H̶̡̢̦̼̟͔̟̎̿̀́̉̓̓̚Ţ͎̖̗̗̮̯̳͉̎͐́͆̊̕͜Ţ̴̝̱̗͈̥͇̓̐͒̒̆͑͜͠P̡̭̱̙͍͋̓̔͡͠ ì̸̟͕̜̺̱͔͖͖̱̀̀͛̽n͙͇̠͕̯̤̽͆̀́͆͆͑̊̃̐͢͜ R̢̠̼͇͔͒͛̓͐̊͗̚͡e͖̘̫̝̻̙͑͐̒͑̏̓͟͜͝v̗̞͔̰͍̓́̑̉̅̒̉̚͟e̢̧̹͉̮̮͖̩͙͈͑̿͛͒̎̃̄r̴̢̨̛̘̩͇͖̦̒̏͆̀̌̅͟s̸̛͉̥̬͎̟̜̽̇̉̅́̾͒͛ͅê͔̣̭̮͇̟̰̈̒̏̿͗̇̅͋͘͟ͅ
 
-This is the working area for the individual Internet-Draft, "Potato - Reverse HTTP".
+This is the working area for the individual Internet-Draft, "🥔 (Potato) - ‮H̶̡̢̦̼̟͔̟̎̿̀́̉̓̓̚Ţ͎̖̗̗̮̯̳͉̎͐́͆̊̕͜Ţ̴̝̱̗͈̥͇̓̐͒̒̆͑͜͠P̡̭̱̙͍͋̓̔͡͠ ì̸̟͕̜̺̱͔͖͖̱̀̀͛̽n͙͇̠͕̯̤̽͆̀́͆͆͑̊̃̐͢͜ R̢̠̼͇͔͒͛̓͐̊͗̚͡e͖̘̫̝̻̙͑͐̒͑̏̓͟͜͝v̗̞͔̰͍̓́̑̉̅̒̉̚͟e̢̧̹͉̮̮͖̩͙͈͑̿͛͒̎̃̄r̴̢̨̛̘̩͇͖̦̒̏͆̀̌̅͟s̸̛͉̥̬͎̟̜̽̇̉̅́̾͒͛ͅê͔̣̭̮͇̟̰̈̒̏̿͗̇̅͋͘͟ͅ".
 
 * [Editor's Copy](https://martinthomson.github.io/potato/#go.draft-thomson-ptth-potato.html)
 * [Datatracker Page](https://datatracker.ietf.org/doc/draft-thomson-ptth-potato)
@@ -13,7 +13,7 @@ This is the working area for the individual Internet-Draft, "Potato - Reverse HT
 ## Contributing
 
 See the
-[guidelines for contributions](https://github.com/martinthomson/potato/blob//CONTRIBUTING.md).
+[guidelines for contributions](https://github.com/martinthomson/potato/blob/main/CONTRIBUTING.md).
 
 The contributing file also has tips on how to make contributions, if you
 don't already know how to do that.
