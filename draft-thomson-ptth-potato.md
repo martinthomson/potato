@@ -1,5 +1,5 @@
 ---
-title: "🥔 (Potato) - ‮H̶̡̢̦̼̟͔̟̎̿̀́̉̓̓̚Ţ͎̖̗̗̮̯̳͉̎͐́͆̊̕͜Ţ̴̝̱̗͈̥͇̓̐͒̒̆͑͜͠P̡̭̱̙͍͋̓̔͡͠ ì̸̟͕̜̺̱͔͖͖̱̀̀͛̽n͙͇̠͕̯̤̽͆̀́͆͆͑̊̃̐͢͜ R̢̠̼͇͔͒͛̓͐̊͗̚͡e͖̘̫̝̻̙͑͐̒͑̏̓͟͜͝v̗̞͔̰͍̓́̑̉̅̒̉̚͟e̢̧̹͉̮̮͖̩͙͈͑̿͛͒̎̃̄r̴̢̨̛̘̩͇͖̦̒̏͆̀̌̅͟s̸̛͉̥̬͎̟̜̽̇̉̅́̾͒͛ͅê͔̣̭̮͇̟̰̈̒̏̿͗̇̅͋͘͟ͅ"
+title: "🥔 (P̷̙̩̩̖̦̦̮̲͖͗̅͋̇̊o̷̢͚̼͎͉̙̩̻̱̊̂̽̀̅̚͟͡t̴̤̖̞͖̰̐̇̋̍̑̓̏̕͝ȁ̷̩̹͎͖̮͚͋͑̏̀̓̂͡͞ͅt̗̹̩̭͈̳̫͈͈̒͆̃̿̚͝͠o͖͓͈̩̻̤͎͐̐͐̅̂́͟) - HTTP, Inverted"
 abbrev: "🥔"
 category: std
 
@@ -12,9 +12,9 @@ v: 3
 area: "Web and Internet Transport"
 workgroup: "Protocol for Transposed Transactions over HTTP"
 keyword:
- - next generation
- - unicorn
- - sparkling distributed ledger
+ - "b̤͇̜̯̪̼̱̲͕͊͋̑͆̽̏́͑a̧̨̬͙̟̤̟̓͆̓̄̒̚ç̧͇̥͔͕̼͋̏͆̉̍͢ǩ̴͇͙͎̹̼̳̫͗̏̂̊̆̉̌͘͟͝w̸̗̼͔̲̗͍͙͎͋̈́̀̔̋̓̒͡a̸̡̲͍̱̥͎̦͐̋͌́͑̃̓̚ŗ̷̧̥̖̙̀͆̈͊͡d̗̲̦̻͚̥̐̌̐̐͂̄͠s̵̢͚͈̖̟̽͊̅̐͐͗͘͟͠"
+ - recursion
+ - "left-handed thread"
 venue:
   group: "Protocol for Transposed Transactions over HTTP"
   type: "Working Group"
@@ -44,7 +44,7 @@ informative:
 
 --- abstract
 
-This document defines 🥔 (Potato),
+This document defines 🥔 (P̷̙̩̩̖̦̦̮̲͖͗̅͋̇̊o̷̢͚̼͎͉̙̩̻̱̊̂̽̀̅̚͟͡t̴̤̖̞͖̰̐̇̋̍̑̓̏̕͝ȁ̷̩̹͎͖̮͚͋͑̏̀̓̂͡͞ͅt̗̹̩̭͈̳̫͈͈̒͆̃̿̚͝͠o͖͓͈̩̻̤͎͐̐͐̅̂́͟),
 a suite of reversed versions of HTTP for origin servers.
 
 
@@ -367,6 +367,10 @@ GET /some/prearranged/resource HTTP/1.1
 Host: origin.example
 
 ~~~
+
+The origin server replies
+and presents evidence of its authorization:
+
 ~~~http
 HTTP/1.1 200 OK
 
