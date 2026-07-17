@@ -1,8 +1,8 @@
 <!-- regenerate: on (set to off if you edit this file) -->
 
-# 🥔 (Potato) - ‮H̶̡̢̦̼̟͔̟̎̿̀́̉̓̓̚Ţ͎̖̗̗̮̯̳͉̎͐́͆̊̕͜Ţ̴̝̱̗͈̥͇̓̐͒̒̆͑͜͠P̡̭̱̙͍͋̓̔͡͠ ì̸̟͕̜̺̱͔͖͖̱̀̀͛̽n͙͇̠͕̯̤̽͆̀́͆͆͑̊̃̐͢͜ R̢̠̼͇͔͒͛̓͐̊͗̚͡e͖̘̫̝̻̙͑͐̒͑̏̓͟͜͝v̗̞͔̰͍̓́̑̉̅̒̉̚͟e̢̧̹͉̮̮͖̩͙͈͑̿͛͒̎̃̄r̴̢̨̛̘̩͇͖̦̒̏͆̀̌̅͟s̸̛͉̥̬͎̟̜̽̇̉̅́̾͒͛ͅê͔̣̭̮͇̟̰̈̒̏̿͗̇̅͋͘͟ͅ
+# 🥔 (‮P̷̙̩̩̖̦̦̮̲͖͗̅͋̇̊o̷̢͚̼͎͉̙̩̻̱̊̂̽̀̅̚͟͡t̴̤̖̞͖̰̐̇̋̍̑̓̏̕͝ȁ̷̩̹͎͖̮͚͋͑̏̀̓̂͡͞ͅt̗̹̩̭͈̳̫͈͈̒͆̃̿̚͝͠o͖͓͈̩̻̤͎͐̐͐̅̂́͟‬) - HTTP, Inverted
 
-This is the working area for the individual Internet-Draft, "🥔 (Potato) - ‮H̶̡̢̦̼̟͔̟̎̿̀́̉̓̓̚Ţ͎̖̗̗̮̯̳͉̎͐́͆̊̕͜Ţ̴̝̱̗͈̥͇̓̐͒̒̆͑͜͠P̡̭̱̙͍͋̓̔͡͠ ì̸̟͕̜̺̱͔͖͖̱̀̀͛̽n͙͇̠͕̯̤̽͆̀́͆͆͑̊̃̐͢͜ R̢̠̼͇͔͒͛̓͐̊͗̚͡e͖̘̫̝̻̙͑͐̒͑̏̓͟͜͝v̗̞͔̰͍̓́̑̉̅̒̉̚͟e̢̧̹͉̮̮͖̩͙͈͑̿͛͒̎̃̄r̴̢̨̛̘̩͇͖̦̒̏͆̀̌̅͟s̸̛͉̥̬͎̟̜̽̇̉̅́̾͒͛ͅê͔̣̭̮͇̟̰̈̒̏̿͗̇̅͋͘͟ͅ".
+This is the working area for the individual Internet-Draft, "🥔 (‮P̷̙̩̩̖̦̦̮̲͖͗̅͋̇̊o̷̢͚̼͎͉̙̩̻̱̊̂̽̀̅̚͟͡t̴̤̖̞͖̰̐̇̋̍̑̓̏̕͝ȁ̷̩̹͎͖̮͚͋͑̏̀̓̂͡͞ͅt̗̹̩̭͈̳̫͈͈̒͆̃̿̚͝͠o͖͓͈̩̻̤͎͐̐͐̅̂́͟‬) - HTTP, Inverted".
 
 * [Editor's Copy](https://martinthomson.github.io/potato/#go.draft-thomson-ptth-potato.html)
 * [Datatracker Page](https://datatracker.ietf.org/doc/draft-thomson-ptth-potato)
