@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2026-07-16T01:12:27.404929+00:00",
+  "timestamp": "2026-07-19T01:13:15.854766+00:00",
   "repo": "martinthomson/potato",
   "labels": [
     {
@@ -55,15 +55,15 @@
       "id": "I_kwDOP1zgEM8AAAABE8djPg",
       "title": "ALPN improvements",
       "url": "https://github.com/martinthomson/potato/issues/1",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "martinthomson",
       "authorAssociation": "OWNER",
       "assignees": [],
       "labels": [],
       "body": "Right now, this uses \"rh1\", \"rh2\", \"rh3\" for ALPN, which is not taking advantage of an opportunity.\n\nSwitching to \"\u0196\u0265\", \"\u0547\u0265\", and \"\u0190\u0265\" would communicate the inversion quite effectively.\n\nSadly, the best mirror text generators, which would be preferable, don't have a lowercase \"h\" equivalent character to use.  And the 1, 2, and 3 substitutes are often even worse.  The best I've seen messes with RTL to produce \"\u07c1\u029c\", \"\ud801\udc55\u029c\", and \"\u0510\u029c\", which is not at all inspiring.  There is also straight upside down: \"\u03bc\u230b\", \"\u03bc\u1615\", and \"\u03bc3\".  On balance, upside down and back to front seems like the clearest of the options on the table.",
       "createdAt": "2026-06-10T00:36:09Z",
-      "updatedAt": "2026-06-10T00:36:09Z",
-      "closedAt": null,
+      "updatedAt": "2026-07-16T10:03:42Z",
+      "closedAt": "2026-07-16T10:03:42Z",
       "comments": []
     }
   ],
